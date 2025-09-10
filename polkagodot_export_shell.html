@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+        <title>$GODOT_PROJECT_NAME</title>
+        <style>
+html, body, #canvas {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+body {
+    color: white;
+    background-color: black;
+    overflow: hidden;
+    touch-action: none;
+}
+
+#canvas {
+    display: block;
+}
+
+#canvas:focus {
+    outline: none;
+}
+
+#status, #status-splash, #status-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+#status, #status-splash {
+    top: 0;
+    bottom: 0;
+}
+
+#status {
+    background-color: #242424;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+#status-splash {
+    max-height: 100%;
+    max-width: 100%;
+    margin: auto;
+}
+
+#status-progress, #status-notice {
+    display: none;
+}
+
+#status-progress {
+    bottom: 10%;
+    width: 50%;
+    margin: 0 auto;
+}
+
+#status-notice {
+    background-color: #5b3943;
+    border-radius: 0.5rem;
+    border: 1px solid #9b3943;
+    color: #e0e0e0;
+    font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+    line-height: 1.3;
+    margin: 0 2rem;
+    overflow: hidden;
+    padding: 1rem;
+    text-align: center;
+    z-index: 1;
+}
+        </style>
+        $GODOT_HEAD_INCLUDE
+    </head>
+    <body>
+        <canvas id="canvas">
+            Your browser does not support the canvas tag.
+        </canvas>
+
+        <noscript>
+            Your browser does not support JavaScript.
+        </noscript>
+
+        <div id="status">
+            <img id="status-splash" src="$GODOT_SPLASH" alt="">
+            <progress id="status-progress"></progress>
+            <div id="status-notice"></div>
+        </div>
+
+        <script src="$GODOT_URL"></script>
+        <script>
+        const GODOT_CONFIG = $GODOT_CONFIG;
+        const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+        const engine = new Engine(GODOT_CONFIG);
+
+        (function () {
+            const statusOverlay = document.getElementById('status');
+            const statusProgress = document.getElementById('status-progress');
+            const statusNotice = document.getElementById('status-notice');
+
+            let initializing = true;
+            let statusMode = '';
+
+            function setStatusMode(mode) {
+                if (statusMode === mode || !initializing) {
+                    return;
+                }
+                if (mode === 'hidden') {
+                    statusOverlay.remove();
+                    initializing = false;
+                    return;
+                }
+                statusOverlay.style.visibility = 'visible';
+                statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+                statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+                statusMode = mode;
+            }
+
+            function setStatusNotice(text) {
+                while (statusNotice.lastChild) {
+                    statusNotice.removeChild(statusNotice.lastChild);
+                }
+                const lines = text.split('\n');
+                lines.forEach((line) => {
+                    statusNotice.appendChild(document.createTextNode(line));
+                    statusNotice.appendChild(document.createElement('br'));
+                });
+            }
+
+            function displayFailureNotice(err) {
+                console.error(err);
+                if (err instanceof Error) {
+                    setStatusNotice(err.message);
+                } else if (typeof err === 'string') {
+                    setStatusNotice(err);
+                } else {
+                    setStatusNotice('An unknown error occured');
+                }
+                setStatusMode('notice');
+                initializing = false;
+            }
+
+            const missing = Engine.getMissingFeatures({
+                threads: GODOT_THREADS_ENABLED,
+            });
+
+            if (missing.length !== 0) {
+                if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+                    // There's a chance that installing the service worker would fix the issue
+                    Promise.race([
+                        navigator.serviceWorker.getRegistration().then((registration) => {
+                            if (registration != null) {
+                                return Promise.reject(new Error('Service worker already exists.'));
+                            }
+                            return registration;
+                        }).then(() => engine.installServiceWorker()),
+                        // For some reason, `getRegistration()` can stall
+                        new Promise((resolve) => {
+                            setTimeout(() => resolve(), 2000);
+                        }),
+                    ]).catch((err) => {
+                        console.error('Error while registering service worker:', err);
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    // Display the message as usual
+                    const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+                    displayFailureNotice(missingMsg + missing.join('\n'));
+                }
+            } else {
+                setStatusMode('progress');
+                engine.startGame({
+                    'onProgress': function (current, total) {
+                        if (current > 0 && total > 0) {
+                            statusProgress.value = current;
+                            statusProgress.max = total;
+                        } else {
+                            statusProgress.removeAttribute('value');
+                            statusProgress.removeAttribute('max');
+                        }
+                    },
+                }).then(() => {
+                    setStatusMode('hidden');
+                }, displayFailureNotice);
+            }
+        }());
+
+
+        // ABI encoder/decoder for ERC721 contract calls
+        const ABIEncoder = {
+            // Precomputed function selectors
+            selectors: {
+                'balanceOf': '0x70a08231',       // balanceOf(address)
+                'ownerOf': '0x6352211e',         // ownerOf(uint256)
+                'tokenURI': '0xc87b56dd',        // tokenURI(uint256)
+                'totalSupply': '0x18160ddd',     // totalSupply()
+                'name': '0x06fdde03',            // name()
+                'symbol': '0x95d89b41'           // symbol()
+            },
+
+            encodeAddress(address) {
+                return address.slice(2).toLowerCase().padStart(64, '0');
+            },
+
+            encodeUint256(value) {
+                const hex = BigInt(value).toString(16);
+                return hex.padStart(64, '0');
+            },
+
+            decodeAddress(data) {
+                if (!data || data === '0x') return null;
+                return '0x' + data.slice(-40).toLowerCase();
+            },
+
+            decodeUint256(data) {
+                if (!data || data === '0x') return 0;
+                // Remove '0x' prefix if present
+                const hex = data.startsWith('0x') ? data.slice(2) : data;
+                // Use BigInt for proper uint256 handling, then convert to number
+                // This is safe for NFT balances which are typically small
+                const bigIntValue = BigInt('0x' + hex);
+                return Number(bigIntValue);
+            },
+
+            decodeString(data) {
+                if (!data || data === '0x' || data.length < 130) return '';
+                const strData = data.slice(130);
+                const length = parseInt(data.slice(66, 130), 16) * 2;
+                const hexStr = strData.slice(0, length);
+                let str = '';
+                for (let i = 0; i < hexStr.length; i += 2) {
+                    const code = parseInt(hexStr.substr(i, 2), 16);
+                    if (code !== 0) str += String.fromCharCode(code);
+                }
+                return str;
+            },
+
+            buildCallData(functionName, ...params) {
+                const selector = this.selectors[functionName];
+                if (!selector) throw new Error('Unknown function: ' + functionName);
+                return selector + params.join('');
+            }
+        };
+
+        const WalletManager = {
+            provider: null,
+            currentAddress: null,
+
+            async connectWallet() {
+                try {
+                    if (typeof window.ethereum !== 'undefined') {
+                        this.provider = window.ethereum;
+                        const accounts = await this.provider.request({ 
+                            method: 'eth_requestAccounts' 
+                        });
+                        this.currentAddress = accounts[0];
+                        return true;
+                    } else {
+                        console.error('No Ethereum provider detected');
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Error connecting wallet:', error);
+                    return false;
+                }
+            },
+
+            async signMessage(message) {
+                if (!this.provider || !this.currentAddress) {
+                    console.error('Wallet not connected');
+                    return null;
+                }
+                try {
+                    const signature = await this.provider.request({
+                        method: 'personal_sign',
+                        params: [message, this.currentAddress]
+                    });
+                    return signature;
+                } catch (error) {
+                    console.error('Error signing message:', error);
+                    return null;
+                }
+            },
+
+            getCurrentWalletAddress() {
+                return this.currentAddress;
+            },
+
+            async disconnectWallet() {
+                this.provider = null;
+                this.currentAddress = null;
+                return true;
+            },
+
+            async ethCall(to, data, rpcUrl) {
+                if (rpcUrl) {
+                    const response = await fetch(rpcUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_call',
+                            params: [{ to, data }, 'latest'],
+                            id: 1
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.error) {
+                        throw new Error(result.error.message || 'RPC call failed');
+                    }
+                    return result.result;
+                }
+                
+                const provider = this.provider || window.ethereum;
+                if (!provider) {
+                    throw new Error('No provider available');
+                }
+                return await provider.request({
+                    method: 'eth_call',
+                    params: [{ to, data }, 'latest']
+                });
+            }
+        };
+
+
+        const STORAGE_PREFIX = 'polka_';
+        const SIGNATURE_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+        const PolkaInterface = {
+            hasEthereumProvider() {
+                return (typeof window.ethereum !== 'undefined');
+            },
+
+            storeSignature(wallet_address, signature) {
+                if (typeof wallet_address !== 'string' || typeof signature !== 'string') {
+                    console.error('store_signature: Both wallet_address and signature must be strings.');
+                    return;
+                }
+
+                const key = `${STORAGE_PREFIX}signature_${wallet_address}`;
+                const data = {
+                    signature: signature,
+                    timestamp: Date.now()
+                };
+
+                try {
+                    localStorage.setItem(key, JSON.stringify(data));
+                } catch (e) {
+                    console.error('store_signature: Failed to store signature in localStorage.', e);
+                }
+            },
+
+
+            storeAuthKey(wallet_address, auth_key) {
+                if (typeof wallet_address !== 'string' || typeof auth_key !== 'string') {
+                    console.error('store_auth_key: Both wallet_address and auth_key must be strings.');
+                    return;
+                }
+
+                const key = `${STORAGE_PREFIX}authkey_${wallet_address}`;
+
+                try {
+                    localStorage.setItem(key, auth_key);
+                } catch (e) {
+                    console.error('store_auth_key: Failed to store auth key in localStorage.', e);
+                }
+            },
+
+
+            loadSignature(wallet_address) {
+                if (typeof wallet_address !== 'string') {
+                    console.error('load_signature: wallet_address must be a string.');
+                    return '';
+                }
+
+                const key = `${STORAGE_PREFIX}signature_${wallet_address}`;
+
+                try {
+                    const item = localStorage.getItem(key);
+                    if (!item) {
+                        return '';
+                    }
+
+                    const data = JSON.parse(item);
+                    if (!data.signature || !data.timestamp) {
+                        localStorage.removeItem(key);
+                        return '';
+                    }
+
+                    const currentTime = Date.now();
+                    if (currentTime - data.timestamp > SIGNATURE_EXPIRATION) {
+                        localStorage.removeItem(key);
+                        return '';
+                    }
+
+                    return data.signature;
+                } catch (e) {
+                    console.error('load_signature: Failed to load signature from localStorage.', e);
+                    return '';
+                }
+            },
+
+
+            loadAuthKey(wallet_address) {
+                if (typeof wallet_address !== 'string') {
+                    console.error('load_auth_key: wallet_address must be a string.');
+                    return '';
+                }
+
+                const key = `${STORAGE_PREFIX}authkey_${wallet_address}`;
+
+                try {
+                    const authKey = localStorage.getItem(key);
+                    return authKey ? authKey : '';
+                } catch (e) {
+                    console.error('load_auth_key: Failed to load auth key from localStorage.', e);
+                    return '';
+                }
+            },
+
+            async connectWallet() {
+                const result = await WalletManager.connectWallet();
+                return result;
+            },
+
+            getCurrentWalletAddress() {
+                const address = WalletManager.getCurrentWalletAddress();
+                return address;
+            },
+
+            async signMessage(message) {
+                const signature = await WalletManager.signMessage(message);
+                return signature;
+            },
+
+            async disconnectWallet() {
+                const result = await WalletManager.disconnectWallet();
+                return result;
+            },
+
+            isWalletConnected() {
+                return (WalletManager.currentAddress != null);
+            },
+
+            async queryNFTs(contractAddress, contractABIJson, optionsJson = '{}') {
+                try {
+                    let options;
+                    
+                    try {
+                        options = JSON.parse(optionsJson);
+                    } catch (parseError) {
+                        throw new Error('Failed to parse JSON parameters: ' + parseError.message);
+                    }
+                    
+                    if (!contractAddress) {
+                        throw new Error('Contract address is required');
+                    }
+
+                    const userAddress = options.user_address || options.userAddress || WalletManager.currentAddress;
+                    if (!userAddress) {
+                        throw new Error('User address is required. Either connect wallet or provide user_address in options.');
+                    }
+
+                    const result = await this._queryNFTsFromContract(contractAddress, userAddress, options);
+                    return JSON.stringify(result);
+                } catch (error) {
+                    console.error('Error querying NFTs:', error);
+                    return JSON.stringify({
+                        address: contractAddress,
+                        tokenCount: 0,
+                        tokens: [],
+                        error: error.message
+                    });
+                }
+            },
+
+            async _queryNFTsFromContract(contractAddress, userAddress, options) {
+                const tokens = [];
+                const fromTokenId = options.from_token_id || options.fromTokenId || 0;
+                const toTokenId = options.to_token_id || options.toTokenId || 10000;
+                const batchSize = options.batch_size || options.batchSize || 100;
+                
+                try {
+                    let balance = null;
+                    try {
+                        console.log('[PolkaInterface] Calling balanceOf for:', userAddress);
+                        const callData = ABIEncoder.buildCallData('balanceOf', ABIEncoder.encodeAddress(userAddress));
+                        console.log('[PolkaInterface] Call data:', callData);
+                        const rpcUrl = options.rpc_url || options.rpcUrl;
+                        const result = await WalletManager.ethCall(contractAddress, callData, rpcUrl);
+                        console.log('[PolkaInterface] Raw result:', result);
+                        balance = ABIEncoder.decodeUint256(result);
+                        console.log('[PolkaInterface] Decoded balance:', balance);
+                    } catch (e) {
+                        console.log('balanceOf error:', e.message || e);
+                        console.log('Will enumerate tokens instead');
+                    }
+
+                    const promises = [];
+                    for (let i = fromTokenId; i <= toTokenId && (balance === null || tokens.length < balance); i += batchSize) {
+                        const batchPromise = this._queryTokenBatch(contractAddress, userAddress, i, Math.min(i + batchSize - 1, toTokenId), options);
+                        promises.push(batchPromise);
+                        
+                        if (promises.length >= 5) {
+                            const batchResults = await Promise.all(promises);
+                            batchResults.forEach(batch => tokens.push(...batch));
+                            promises.length = 0;
+                            
+                            if (balance !== null && tokens.length >= balance) {
+                                break;
+                            }
+                        }
+                    }
+
+                    if (promises.length > 0) {
+                        const batchResults = await Promise.all(promises);
+                        batchResults.forEach(batch => tokens.push(...batch));
+                    }
+
+                    const tokensWithMetadata = await this._fetchTokenMetadata(contractAddress, tokens, options);
+
+                    return {
+                        address: contractAddress,
+                        tokenCount: tokens.length,
+                        tokens: tokensWithMetadata,
+                        error: null
+                    };
+                } catch (error) {
+                    throw error;
+                }
+            },
+
+            async _queryTokenBatch(contractAddress, userAddress, startId, endId, options) {
+                const ownedTokens = [];
+                const promises = [];
+                
+                for (let tokenId = startId; tokenId <= endId; tokenId++) {
+                    const promise = (async () => {
+                        try {
+                            const callData = ABIEncoder.buildCallData('ownerOf', ABIEncoder.encodeUint256(tokenId));
+                            const rpcUrl = options.rpc_url || options.rpcUrl;
+                            const owner = await WalletManager.ethCall(contractAddress, callData, rpcUrl);
+                            const ownerAddress = ABIEncoder.decodeAddress(owner);
+                            if (ownerAddress && ownerAddress.toLowerCase() === userAddress.toLowerCase()) {
+                                ownedTokens.push({ tokenId: tokenId.toString(), owner: ownerAddress });
+                            }
+                        } catch (e) {
+                            // Token doesn't exist, skip
+                        }
+                    })();
+                    promises.push(promise);
+                }
+                
+                await Promise.all(promises);
+                return ownedTokens;
+            },
+
+            async _fetchTokenMetadata(contractAddress, tokens, options) {
+                const tokensWithMetadata = [];
+                const metadataPromises = [];
+                
+                for (const token of tokens) {
+                    const promise = this._fetchSingleTokenMetadata(contractAddress, token.tokenId, options)
+                        .then(metadata => {
+                            tokensWithMetadata.push({
+                                ...token,
+                                metadata
+                            });
+                        });
+                    metadataPromises.push(promise);
+                    
+                    if (metadataPromises.length >= 10) {
+                        await Promise.all(metadataPromises);
+                        metadataPromises.length = 0;
+                    }
+                }
+                
+                if (metadataPromises.length > 0) {
+                    await Promise.all(metadataPromises);
+                }
+                
+                return tokensWithMetadata;
+            },
+
+            async _fetchSingleTokenMetadata(contractAddress, tokenId, options) {
+                try {
+                    const callData = ABIEncoder.buildCallData('tokenURI', ABIEncoder.encodeUint256(tokenId));
+                    const rpcUrl = options.rpc_url || options.rpcUrl;
+                    const result = await WalletManager.ethCall(contractAddress, callData, rpcUrl);
+                    const tokenURI = ABIEncoder.decodeString(result);
+                    
+                    if (!tokenURI) {
+                        return { tokenId, error: 'No token URI' };
+                    }
+                    
+                    const metadata = await this._fetchMetadataWithCORS(tokenURI, options);
+                    return {
+                        tokenId,
+                        tokenURI,
+                        ...metadata
+                    };
+                } catch (error) {
+                    return {
+                        tokenId,
+                        error: error.message
+                    };
+                }
+            },
+
+            async _fetchMetadataWithCORS(uri, options) {
+                let fetchUri = uri;
+                if (uri.startsWith('ipfs://')) {
+                    const ipfsGateway = options.ipfsGateway || 'https://ipfs.io/ipfs/';
+                    fetchUri = uri.replace('ipfs://', ipfsGateway);
+                }
+                
+                try {
+                    const response = await fetch(fetchUri, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        },
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    if (options.corsProxy) {
+                        try {
+                            const proxyUrl = `${options.corsProxy}${encodeURIComponent(fetchUri)}`;
+                            const proxyResponse = await fetch(proxyUrl);
+                            if (proxyResponse.ok) {
+                                return await proxyResponse.json();
+                            }
+                        } catch (proxyError) {
+                            console.error('CORS proxy also failed:', proxyError);
+                        }
+                    }
+                    
+                    return {
+                        uri: fetchUri,
+                        error: 'Failed to fetch metadata: ' + error.message
+                    };
+                }
+            }
+        };
+
+        window.PolkaInterface = PolkaInterface;
+
+        </script>
+    </body>
+</html>
