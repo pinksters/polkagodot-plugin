@@ -1,0 +1,72 @@
+[gd_scene load_steps=8 format=3 uid="uid://c4xv8p2ky7nqm"]
+
+[ext_resource type="Script" uid="uid://6mkff731y3y3" path="res://addons/polkagodot/ui/wallet_management_screen/account_option_button/account_option_button.gd" id="1_account"]
+[ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="2_account"]
+[ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="3_account"]
+[ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="4_account"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="5_account"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selected"]
+bg_color = Color(1, 0.412, 0.706, 0.2)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.412, 0.706, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_indicator"]
+bg_color = Color(1, 0.412, 0.706, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="AccountOptionButton" type="Button"]
+custom_minimum_size = Vector2(300, 60)
+size_flags_horizontal = 3
+focus_mode = 0
+theme_override_styles/normal = ExtResource("2_account")
+theme_override_styles/pressed = ExtResource("3_account")
+theme_override_styles/hover = ExtResource("4_account")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_selected")
+script = ExtResource("1_account")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 15
+
+[node name="Spacer" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SelectedIndicator" type="Panel" parent="HBoxContainer"]
+custom_minimum_size = Vector2(4, 30)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_indicator")
+
+[node name="AddressLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("5_account")
+theme_override_font_sizes/font_size = 16
+text = "0x0000...0000"
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+mouse_filter = 2

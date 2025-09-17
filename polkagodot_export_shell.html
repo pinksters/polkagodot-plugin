@@ -250,26 +250,168 @@ body {
         };
 
         const WalletManager = {
+            discoveredWallets: new Map(),
             provider: null,
             currentAddress: null,
+            currentWalletId: null,
+            availableAccounts: [],
 
-            async connectWallet() {
-                try {
-                    if (typeof window.ethereum !== 'undefined') {
-                        this.provider = window.ethereum;
-                        const accounts = await this.provider.request({ 
-                            method: 'eth_requestAccounts' 
+            init() {
+                this.setupEIP6963Discovery();
+                this.checkLegacyProviders();
+            },
+
+            setupEIP6963Discovery() {
+                if (typeof window === 'undefined') return;
+
+                window.addEventListener("eip6963:announceProvider", (event) => {
+                    const detail = event.detail;
+                    if (detail && detail.info && detail.provider) {
+                        const walletId = detail.info.uuid || detail.info.name;
+                        this.discoveredWallets.set(walletId, {
+                            info: detail.info,
+                            provider: detail.provider
                         });
-                        this.currentAddress = accounts[0];
-                        return true;
+                        console.log(`[PolkaInterface] Discovered wallet: ${detail.info.name} (${walletId})`);
+                    }
+                });
+
+                window.dispatchEvent(new Event("eip6963:requestProvider"));
+            },
+
+            checkLegacyProviders() {
+                setTimeout(() => {
+                    if (window.ethereum && this.discoveredWallets.size === 0) {
+                        const legacyId = 'legacy-ethereum';
+                        let name = 'Unknown Wallet';
+                        let icon = '';
+
+                        if (window.ethereum.isMetaMask) {
+                            name = 'MetaMask';
+                        } else if (window.ethereum.isCoinbaseWallet) {
+                            name = 'Coinbase Wallet';
+                        } else if (window.ethereum.isBraveWallet) {
+                            name = 'Brave Wallet';
+                        }
+
+                        this.discoveredWallets.set(legacyId, {
+                            info: {
+                                uuid: legacyId,
+                                name: name,
+                                icon: icon,
+                                rdns: 'legacy.ethereum'
+                            },
+                            provider: window.ethereum
+                        });
+                        console.log(`[PolkaInterface] Discovered legacy wallet: ${name}`);
+                    }
+                }, 100);
+            },
+
+            getDiscoveredWallets() {
+                const wallets = [];
+                for (const [id, wallet] of this.discoveredWallets) {
+                    wallets.push({
+                        id: id,
+                        name: wallet.info.name,
+                        icon: wallet.info.icon,
+                        rdns: wallet.info.rdns
+                    });
+                }
+                return wallets;
+            },
+
+            async getAccountsForWallet(walletId) {
+                const wallet = this.discoveredWallets.get(walletId);
+                if (!wallet) {
+                    throw new Error('Wallet not found: ' + walletId);
+                }
+
+                try {
+                    const accounts = await wallet.provider.request({
+                        method: 'eth_accounts'
+                    });
+                    return accounts || [];
+                } catch (error) {
+                    console.error('Error getting accounts:', error);
+                    return [];
+                }
+            },
+
+            async connectWallet(walletId = null) {
+                try {
+                    if (walletId) {
+                        const wallet = this.discoveredWallets.get(walletId);
+                        if (!wallet) {
+                            throw new Error('Wallet not found: ' + walletId);
+                        }
+                        this.provider = wallet.provider;
+                        this.currentWalletId = walletId;
+                    } else if (this.discoveredWallets.size > 0) {
+                        const firstWallet = this.discoveredWallets.entries().next().value;
+                        this.provider = firstWallet[1].provider;
+                        this.currentWalletId = firstWallet[0];
+                    } else if (window.ethereum) {
+                        this.provider = window.ethereum;
+                        this.currentWalletId = 'legacy-ethereum';
                     } else {
                         console.error('No Ethereum provider detected');
                         return false;
                     }
+
+                    const accounts = await this.provider.request({
+                        method: 'eth_requestAccounts'
+                    });
+                    this.availableAccounts = accounts || [];
+                    this.currentAddress = accounts[0];
+                    return true;
                 } catch (error) {
                     console.error('Error connecting wallet:', error);
                     return false;
                 }
+            },
+
+            async requestAccountSelection() {
+                if (!this.provider) {
+                    throw new Error('No wallet connected');
+                }
+
+                try {
+                    if (this.provider.request) {
+                        try {
+                            await this.provider.request({
+                                method: 'wallet_requestPermissions',
+                                params: [{
+                                    eth_accounts: {}
+                                }]
+                            });
+                        } catch (permError) {
+                            console.log('wallet_requestPermissions not supported, using eth_requestAccounts');
+                        }
+
+                        const accounts = await this.provider.request({
+                            method: 'eth_requestAccounts'
+                        });
+
+                        this.availableAccounts = accounts || [];
+                        if (accounts && accounts.length > 0) {
+                            this.currentAddress = accounts[0];
+                        }
+
+                        return accounts || [];
+                    }
+                } catch (error) {
+                    console.error('Error requesting account selection:', error);
+                    throw error;
+                }
+            },
+
+            async selectAccount(address) {
+                if (this.availableAccounts.includes(address)) {
+                    this.currentAddress = address;
+                    return true;
+                }
+                return false;
             },
 
             async signMessage(message) {
@@ -293,9 +435,25 @@ body {
                 return this.currentAddress;
             },
 
+            getCurrentWalletInfo() {
+                if (!this.currentWalletId) return null;
+                const wallet = this.discoveredWallets.get(this.currentWalletId);
+                return wallet ? {
+                    id: this.currentWalletId,
+                    name: wallet.info.name,
+                    icon: wallet.info.icon
+                } : null;
+            },
+
+            getAvailableAccounts() {
+                return this.availableAccounts || [];
+            },
+
             async disconnectWallet() {
                 this.provider = null;
                 this.currentAddress = null;
+                this.currentWalletId = null;
+                this.availableAccounts = [];
                 return true;
             },
 
@@ -319,7 +477,7 @@ body {
                     }
                     return result.result;
                 }
-                
+
                 const provider = this.provider || window.ethereum;
                 if (!provider) {
                     throw new Error('No provider available');
@@ -330,6 +488,8 @@ body {
                 });
             }
         };
+
+        WalletManager.init();
 
 
         const STORAGE_PREFIX = 'polka_';
@@ -427,14 +587,57 @@ body {
                 }
             },
 
-            async connectWallet() {
-                const result = await WalletManager.connectWallet();
+            async connectWallet(walletId = null) {
+                const result = await WalletManager.connectWallet(walletId);
                 return result;
+            },
+
+            async connectWalletById(walletId) {
+                const result = await WalletManager.connectWallet(walletId);
+                return result;
+            },
+
+            async requestAccountSelection() {
+                try {
+                    const accounts = await WalletManager.requestAccountSelection();
+                    return JSON.stringify(accounts);
+                } catch (error) {
+                    console.error('Error requesting account selection:', error);
+                    return JSON.stringify([]);
+                }
             },
 
             getCurrentWalletAddress() {
                 const address = WalletManager.getCurrentWalletAddress();
                 return address;
+            },
+
+            getDiscoveredWallets() {
+                return JSON.stringify(WalletManager.getDiscoveredWallets());
+            },
+
+            async getAccountsForWallet(walletId) {
+                try {
+                    const accounts = await WalletManager.getAccountsForWallet(walletId);
+                    return JSON.stringify(accounts);
+                } catch (error) {
+                    console.error('Error getting accounts:', error);
+                    return JSON.stringify([]);
+                }
+            },
+
+            getAvailableAccounts() {
+                return JSON.stringify(WalletManager.getAvailableAccounts());
+            },
+
+            async selectAccount(address) {
+                const result = await WalletManager.selectAccount(address);
+                return result;
+            },
+
+            getCurrentWalletInfo() {
+                const info = WalletManager.getCurrentWalletInfo();
+                return info ? JSON.stringify(info) : null;
             },
 
             async signMessage(message) {

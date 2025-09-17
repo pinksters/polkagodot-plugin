@@ -22,7 +22,12 @@ var _callback_nfts_queried: JavaScriptObject
 
 var is_connected: bool = false
 var current_address: String = ""
+var current_wallet_id: String = ""
+var available_accounts: Array = []
+var discovered_wallets: Array = []
 var debug_mode: bool = true
+
+var wallet_management_screen: CanvasLayer = null
 
 func _ready():
 	if OS.has_feature("web"):
@@ -52,13 +57,16 @@ func has_ethereum_provider() -> bool:
 	return false
 
 
-func connect_wallet() -> void:
+func connect_wallet(wallet_id: String = "") -> void:
 	if not js_interface:
 		wallet_connection_failed.emit("No JavaScript interface available")
 		return
-	
-	_log("Attempting to connect wallet...")
-	js_interface.connectWallet().then(_callback_wallet_connected)
+
+	_log("Attempting to connect wallet: " + wallet_id if wallet_id else "Attempting to connect wallet...")
+	if wallet_id:
+		js_interface.connectWalletById(wallet_id).then(_callback_wallet_connected)
+	else:
+		js_interface.connectWallet().then(_callback_wallet_connected)
 
 
 func disconnect_wallet() -> void:
@@ -155,15 +163,21 @@ func _on_wallet_connected(args: Array):
 	var success = false
 	if args.size() > 0:
 		success = bool(args[0])
-	
+
 	if success:
 		current_address = get_wallet_address()
 		is_connected = true
-		_log("Wallet connected: " + current_address)
+		available_accounts = get_available_accounts()
+		var wallet_info = get_current_wallet_info()
+		if wallet_info and wallet_info.has("id"):
+			current_wallet_id = wallet_info.id
+		_log("Wallet connected: " + current_address + " (" + current_wallet_id + ")")
 		wallet_connected.emit(current_address)
 	else:
 		is_connected = false
 		current_address = ""
+		current_wallet_id = ""
+		available_accounts = []
 		_log("Wallet connection failed")
 		wallet_connection_failed.emit("Failed to connect wallet")
 
@@ -171,6 +185,8 @@ func _on_wallet_connected(args: Array):
 func _on_wallet_disconnected(args: Array):
 	is_connected = false
 	current_address = ""
+	current_wallet_id = ""
+	available_accounts = []
 	_log("Wallet disconnected")
 	wallet_disconnected.emit()
 
@@ -193,20 +209,20 @@ func _on_message_signed(args: Array):
 
 func _on_nfts_queried(args: Array):
 	_log("NFT query callback received with " + str(args.size()) + " arguments")
-	
+
 	if args.is_empty():
 		_log("NFT query failed: No result received")
 		nft_query_failed.emit("No result received")
 		return
-	
+
 	var result = args[0]
 	_log("Result type: " + str(typeof(result)))
-	
+
 	if result == null:
 		_log("NFT query failed: Null result")
 		nft_query_failed.emit("Null result received")
 		return
-	
+
 	var result_dict: Dictionary = {}
 	if result is String:
 		var json = JSON.new()
@@ -224,13 +240,129 @@ func _on_nfts_queried(args: Array):
 		_log("Unexpected result type: " + str(typeof(result)))
 		nft_query_failed.emit("Unexpected result type from JavaScript")
 		return
-	
+
 	if result_dict.has("error") and result_dict.error:
 		_log("NFT query failed: " + str(result_dict.error))
 		nft_query_failed.emit(str(result_dict.error))
 	else:
 		_log("NFT query successful: Found " + str(result_dict.get("tokenCount", 0)) + " tokens")
 		nfts_queried.emit(result_dict)
+
+
+func show_wallet_management_screen():
+	if not wallet_management_screen:
+		wallet_management_screen = load("res://addons/polkagodot/ui/wallet_management_screen/wallet_management_screen.tscn").instantiate()
+		get_tree().root.add_child(wallet_management_screen)
+		wallet_management_screen.closed.connect(_on_wallet_management_screen_closed)
+
+	if wallet_management_screen.has_method("show_screen"):
+		wallet_management_screen.show_screen()
+	else:
+		wallet_management_screen.show()
+
+	_log("Showing wallet management screen")
+
+
+func _on_wallet_management_screen_closed():
+	_log("Wallet management screen closed")
+
+
+func get_discovered_wallets() -> Array:
+	if not js_interface:
+		return []
+
+	var wallets_json = js_interface.getDiscoveredWallets()
+	if wallets_json:
+		var json = JSON.new()
+		var parse_result = json.parse(wallets_json)
+		if parse_result == OK:
+			discovered_wallets = json.data
+			return discovered_wallets
+	return []
+
+
+func get_accounts_for_wallet(wallet_id: String) -> Array:
+	if not js_interface:
+		return []
+
+	var accounts_json = js_interface.getAccountsForWallet(wallet_id)
+	if accounts_json:
+		var json = JSON.new()
+		var parse_result = json.parse(accounts_json)
+		if parse_result == OK:
+			return json.data
+	return []
+
+
+func get_available_accounts() -> Array:
+	if not js_interface:
+		return []
+
+	var accounts_json = js_interface.getAvailableAccounts()
+	if accounts_json:
+		var json = JSON.new()
+		var parse_result = json.parse(accounts_json)
+		if parse_result == OK:
+			available_accounts = json.data
+			return available_accounts
+	return []
+
+
+func select_account(address: String) -> bool:
+	if not js_interface:
+		return false
+
+	var result = js_interface.selectAccount(address)
+	if result:
+		current_address = address
+		_log("Account selected: " + address)
+		wallet_connected.emit(address)
+		return true
+	return false
+
+
+func get_current_wallet_info() -> Dictionary:
+	if not js_interface:
+		return {}
+
+	var info_json = js_interface.getCurrentWalletInfo()
+	if info_json:
+		var json = JSON.new()
+		var parse_result = json.parse(info_json)
+		if parse_result == OK:
+			return json.data
+	return {}
+
+
+var _callback_account_selection: JavaScriptObject
+
+func request_account_selection() -> void:
+	if not js_interface:
+		return
+
+	if not _callback_account_selection:
+		_callback_account_selection = JavaScriptBridge.create_callback(_on_account_selection_completed)
+
+	_log("Requesting account selection from wallet...")
+	js_interface.requestAccountSelection().then(_callback_account_selection)
+
+func _on_account_selection_completed(args: Array):
+	if args.is_empty():
+		_log("Account selection failed: No result received")
+		return
+
+	var accounts_json = args[0]
+	_log("Account selection result: " + str(accounts_json))
+
+	if accounts_json:
+		var json = JSON.new()
+		var parse_result = json.parse(accounts_json)
+		if parse_result == OK:
+			available_accounts = json.data
+			if available_accounts.size() > 0:
+				current_address = available_accounts[0]
+				_log("Account selection updated. New address: " + current_address)
+				wallet_connected.emit(current_address)
 
 
 static func get_erc721_abi() -> Array:

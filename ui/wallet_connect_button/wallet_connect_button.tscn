@@ -1,0 +1,92 @@
+[gd_scene load_steps=10 format=3 uid="uid://cfhdf0o6rdm6e"]
+
+[ext_resource type="Script" uid="uid://bc01j0wp88shb" path="res://addons/polkagodot/ui/wallet_connect_button/wallet_connect_button.gd" id="1"]
+[ext_resource type="FontVariation" uid="uid://hvjn3dv84xvx" path="res://addons/polkagodot/assets/fonts/unbounded_light.tres" id="1_e512w"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3_ccdkg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11ua7"]
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e512w"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccdkg"]
+bg_color = Color(0.8560673, 0.8560673, 0.856067, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68qd8"]
+bg_color = Color(0.40443814, 0.40443814, 0.40443814, 0.60800004)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nvc3b"]
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_68qd8"]
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[node name="WalletConnectButton" type="Button"]
+self_modulate = Color(0.5764706, 0.7372549, 1, 1)
+custom_minimum_size = Vector2(200, 40)
+focus_mode = 0
+theme_override_fonts/font = ExtResource("1_e512w")
+theme_override_styles/normal = SubResource("StyleBoxFlat_11ua7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_e512w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ccdkg")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_68qd8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nvc3b")
+script = ExtResource("1")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_ccdkg")
+text = "Connect Wallet"
+label_settings = SubResource("LabelSettings_68qd8")
+horizontal_alignment = 1
+vertical_alignment = 1
