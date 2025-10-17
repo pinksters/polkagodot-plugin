@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://b32sna15g6tqk"]
+
+[ext_resource type="Script" uid="uid://cc1ioxx2181a4" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card.gd" id="1_sp2pg"]
+[ext_resource type="PackedScene" uid="uid://dgdd6cimr50do" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card_content.tscn" id="2_4otwb"]
+[ext_resource type="Texture2D" uid="uid://cgfn8j4h76gca" path="res://addons/polkagodot/ui/nft_showcase_card/card-body_n.png" id="3_sp2pg"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_sp2pg"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sp2pg"]
+resource_local_to_scene = true
+cull_mode = 2
+depth_draw_mode = 1
+albedo_texture = SubResource("ViewportTexture_sp2pg")
+metallic = 1.0
+metallic_specular = 0.0
+roughness = 0.7
+normal_enabled = true
+normal_texture = ExtResource("3_sp2pg")
+clearcoat_roughness = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_sp2pg"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_sp2pg")
+size = Vector2(1, 1.425)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sp2pg"]
+
+[sub_resource type="Sky" id="Sky_sp2pg"]
+sky_material = SubResource("ProceduralSkyMaterial_sp2pg")
+
+[sub_resource type="Environment" id="Environment_oofwc"]
+background_mode = 2
+background_color = Color(1, 1, 1, 1)
+sky = SubResource("Sky_sp2pg")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_sky_contribution = 0.7
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 1.0
+glow_bloom = 1.0
+
+[node name="NFTShowcaseCard" type="Node3D"]
+script = ExtResource("1_sp2pg")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(454, 647)
+
+[node name="NFTShowcaseCardContent" parent="SubViewport" instance=ExtResource("2_4otwb")]
+
+[node name="CardMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9859959, -0.052364115, 0.15833448, 0, 0.9494253, 0.3139924, -0.16676873, -0.30959523, 0.9361296, 0, 0, 0)
+mesh = SubResource("QuadMesh_sp2pg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.77687114, -0.4910401, 0.39414555, 0.06020477, 0.6810258, 0.7297803, -0.6267748, -0.5432158, 0.55863225, 2.9357753, 1.9340982, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.97169363, 0.23624462, 0, -0.23624462, 0.97169363, 0, 0.08709651, 1.4147254)
+current = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_oofwc")

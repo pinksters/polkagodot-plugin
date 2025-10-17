@@ -1,0 +1,199 @@
+[gd_scene load_steps=9 format=3 uid="uid://dkv8qiaxm2nry"]
+
+[ext_resource type="Script" uid="uid://bj3nepoxfckma" path="res://addons/polkagodot/ui/asset_action_view/asset_action_view.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://b32sna15g6tqk" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card.tscn" id="2"]
+[ext_resource type="Texture2D" uid="uid://cpfq6xha1u4kb" path="res://addons/polkagodot/assets/logos/polkadot-particle.png" id="2_dooxm"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
+[ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="4"]
+[ext_resource type="Script" uid="uid://ed2nirihxoo5" path="res://addons/polkagodot/ui/nft_showcase_card/3d_card_view.gd" id="5_c2nca"]
+
+[sub_resource type="Gradient" id="Gradient_k00sx"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dooxm"]
+
+[node name="AssetActionView" type="CanvasLayer"]
+layer = 69421
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.929)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+position = Vector2(606, 758)
+amount = 32
+texture = ExtResource("2_dooxm")
+lifetime = 6.0
+preprocess = 6.0
+emission_shape = 3
+emission_rect_extents = Vector2(400, 1)
+direction = Vector2(0, -1)
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 200.0
+angular_velocity_min = -100.0
+angular_velocity_max = 100.0
+scale_amount_min = 0.5
+color = Color(1, 0.22091639, 0.86076874, 0.38700002)
+color_ramp = SubResource("Gradient_k00sx")
+
+[node name="3DCardView" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_c2nca")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="3DCardView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="3DCardView/SubViewportContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+msaa_2d = 1
+msaa_3d = 1
+use_hdr_2d = true
+size = Vector2i(1152, 648)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="NFTShowcaseCard" parent="3DCardView/SubViewportContainer/SubViewport" instance=ExtResource("2")]
+
+[node name="Center" type="Control" parent="3DCardView"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainPanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(400, 600)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dooxm")
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="LoadingOverlay" type="ColorRect" parent="CenterContainer/MainPanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="LoadingContent" type="VBoxContainer" parent="CenterContainer/MainPanel/LoadingOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="LoadingLabel" type="Label" parent="CenterContainer/MainPanel/LoadingOverlay/LoadingContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 18
+text = "Processing Transaction..."
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="CenterContainer/MainPanel/LoadingOverlay/LoadingContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 1.0
+show_percentage = false
+indeterminate = true
+editor_preview_indeterminate = false
+
+[node name="LoadingCloseButton" type="Button" parent="CenterContainer/MainPanel/LoadingOverlay/LoadingContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 16
+text = "Close"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TopBar" type="HBoxContainer" parent="CenterContainer/MainPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="CloseButton" type="Button" parent="CenterContainer/MainPanel/VBoxContainer/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
+text = "X"
+
+[node name="ContentContainer" type="VBoxContainer" parent="CenterContainer/MainPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="ShowcaseContainer" type="CenterContainer" parent="CenterContainer/MainPanel/VBoxContainer/ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NFTShowcaseCard" parent="CenterContainer/MainPanel/VBoxContainer/ContentContainer/ShowcaseContainer" instance=ExtResource("2")]
+unique_name_in_owner = true
+
+[node name="StatusLabel" type="Label" parent="CenterContainer/MainPanel/VBoxContainer/ContentContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 18
+text = "Not Equipped"
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="CenterContainer/MainPanel/VBoxContainer/ContentContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4")
+text = "Equip"

@@ -1,0 +1,253 @@
+[gd_scene load_steps=14 format=3 uid="uid://dgdd6cimr50do"]
+
+[ext_resource type="Script" uid="uid://dl14bm5jxo0oj" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card_content.gd" id="1_1au61"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="2_1au61"]
+[ext_resource type="Texture2D" uid="uid://cms1wpf0cvh4q" path="res://addons/polkagodot/assets/logos/polkadot-logo.png" id="2_6u8vb"]
+[ext_resource type="Texture2D" uid="uid://dcrpn4uchtpbk" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-base.png" id="3_i21ld"]
+[ext_resource type="Texture2D" uid="uid://bh4cn6mqcewxv" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-borders.png" id="4_6u8vb"]
+[ext_resource type="Texture2D" uid="uid://crte56gyp04a6" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-logo-bg.png" id="5_x1vse"]
+[ext_resource type="Texture2D" uid="uid://ow7e2dho2g5i" path="res://addons/polkagodot/ui/nft_showcase_card/card-logo-gem.png" id="6_i21ld"]
+[ext_resource type="Texture2D" uid="uid://bax451ira6e8f" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-textarea.png" id="7_7gpby"]
+
+[sub_resource type="Gradient" id="Gradient_owvo3"]
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_i21ld"]
+noise_type = 5
+frequency = 0.0487
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6u8vb"]
+noise = SubResource("FastNoiseLite_i21ld")
+color_ramp = SubResource("Gradient_owvo3")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_copbi"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.15656891, 1.329612e-06, 0.105920784, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.87764335, 0.39896294, 0.7932749, 1)
+corner_radius_top_left = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6u8vb"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 0.247059, 0.909804, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.7)
+shadow_size = 8
+
+[node name="NFTShowcaseCardContent" type="Control"]
+custom_minimum_size = Vector2(454, 647)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 454.0
+offset_bottom = 647.0
+script = ExtResource("1_1au61")
+
+[node name="ImageBackground" type="TextureRect" parent="."]
+modulate = Color(0.41456634, 0.7280883, 1, 0.54509807)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -500.0
+offset_top = -513.0
+offset_right = 680.33936
+offset_bottom = 279.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("NoiseTexture2D_6u8vb")
+expand_mode = 1
+
+[node name="ImageBackground2" type="TextureRect" parent="."]
+modulate = Color(0.49456477, 0.40222433, 0.72899854, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -500.0
+offset_top = -513.0
+offset_right = 680.33936
+offset_bottom = 279.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("NoiseTexture2D_6u8vb")
+expand_mode = 1
+
+[node name="BackgroundLogo" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.64100003)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.0
+offset_top = 24.0
+offset_right = -23.0
+offset_bottom = -203.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(210, 210)
+texture = ExtResource("2_6u8vb")
+expand_mode = 1
+
+[node name="Image" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 0
+offset_left = 24.0
+offset_top = 38.0
+offset_right = 430.0
+offset_bottom = 444.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TokenIdLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -135.0
+offset_top = 40.0
+offset_right = -1.0
+offset_bottom = 77.0
+grow_horizontal = 0
+size_flags_horizontal = 0
+theme_override_fonts/font = ExtResource("2_1au61")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_copbi")
+text = "#001"
+vertical_alignment = 1
+
+[node name="EquippedBadge" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 4.0
+offset_top = 40.0
+offset_right = 155.0
+offset_bottom = 77.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_fonts/font = ExtResource("2_1au61")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_6u8vb")
+text = "       EQUIPPED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardBase" type="TextureRect" parent="."]
+modulate = Color(0.8534096, 0.6724378, 0.88500655, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_i21ld")
+expand_mode = 1
+
+[node name="CardBase2" type="TextureRect" parent="."]
+modulate = Color(0.71822184, 0.43363252, 0.76818085, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_6u8vb")
+expand_mode = 1
+
+[node name="CardLogoBG" type="TextureRect" parent="."]
+modulate = Color(0.021434635, 0.021434637, 0.021434627, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_x1vse")
+expand_mode = 1
+
+[node name="CardLogo" type="TextureRect" parent="."]
+modulate = Color(18.892157, 18.892157, 18.892157, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 185.0
+offset_top = 381.0
+offset_right = -185.0
+offset_bottom = -182.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(42, 42)
+texture = ExtResource("2_6u8vb")
+expand_mode = 1
+
+[node name="CardLogoGem" type="TextureRect" parent="."]
+modulate = Color(0.6253981, 0.7815339, 1, 0.492)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 175.0
+offset_top = 372.0
+offset_right = -175.0
+offset_bottom = -170.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_i21ld")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTextarea" type="TextureRect" parent="."]
+modulate = Color(0.59764695, 0.4928704, 0.703426, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_7gpby")
+expand_mode = 1
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 49.0
+offset_top = -198.0
+offset_right = -51.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("2_1au61")
+theme_override_font_sizes/font_size = 24
+text = "Pink Hat"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+text_overrun_behavior = 3
