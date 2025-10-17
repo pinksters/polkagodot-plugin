@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PolkaConfig" load_steps=2 format=3 uid="uid://ddjuc03tjohgq"]
+
+[ext_resource type="Script" uid="uid://bs46k5kougqqu" path="res://addons/polkagodot/classes/polka_config.gd" id="1_owua8"]
+
+[resource]
+script = ExtResource("1_owua8")
+game_id = "test"
+chain_id = 420420422
+chain_name = "Polkadot Hub TestNet"
+currency_name = "Paseo"
+currency_symbol = "PAS"
+rpc_url = "https://testnet-passet-hub-eth-rpc.polkadot.io"
+block_explorer_url = "https://blockscout-passet-hub.parity-testnet.parity.io/"
+metadata/_custom_type_script = "uid://bs46k5kougqqu"
