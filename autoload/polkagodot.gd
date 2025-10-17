@@ -1,5 +1,4 @@
 # PolkaGodot - Web3 functionality for Godot games
-# This singleton provides wallet connections, message signing, and NFT queries
 
 extends Node
 
@@ -12,24 +11,43 @@ signal message_sign_failed(error: String)
 
 signal nfts_queried(result: Dictionary)
 signal nft_query_failed(error: String)
+signal user_nfts_fetched(nfts: Array)
+signal nft_equipped(nft: NFT)
+signal nft_equip_failed(error: String)
+signal nft_unequipped()
+signal nft_unequip_failed(error: String)
+signal equipped_nft_loaded(nft_id: int)
+signal chain_switched(chain_id: String)
+signal chain_switch_failed(error: String)
 
+var config: PolkaConfig = null
 var js_interface: JavaScriptObject = null
 
 var _callback_wallet_connected: JavaScriptObject
 var _callback_wallet_disconnected: JavaScriptObject
 var _callback_message_signed: JavaScriptObject
 var _callback_nfts_queried: JavaScriptObject
+var _callback_nft_equipped: JavaScriptObject
+var _callback_nft_unequipped: JavaScriptObject
+var _callback_equipped_nft_queried: JavaScriptObject
 
 var is_connected: bool = false
 var current_address: String = ""
 var current_wallet_id: String = ""
 var available_accounts: Array = []
 var discovered_wallets: Array = []
-var debug_mode: bool = true
 
 var wallet_management_screen: CanvasLayer = null
+var asset_management_screen: CanvasLayer = null
+
+# Local user's assets
+var user_nfts: Array[NFT] = []
+var is_fetching_nfts: bool = false
+var equipped_nft_id: int = 0
 
 func _ready():
+	_load_config()
+	
 	if OS.has_feature("web"):
 		js_interface = JavaScriptBridge.get_interface("PolkaInterface")
 		
@@ -38,7 +56,10 @@ func _ready():
 			_callback_wallet_disconnected = JavaScriptBridge.create_callback(_on_wallet_disconnected)
 			_callback_message_signed = JavaScriptBridge.create_callback(_on_message_signed)
 			_callback_nfts_queried = JavaScriptBridge.create_callback(_on_nfts_queried)
-			
+			_callback_nft_equipped = JavaScriptBridge.create_callback(_on_nft_equipped)
+			_callback_nft_unequipped = JavaScriptBridge.create_callback(_on_nft_unequipped)
+			_callback_equipped_nft_queried = JavaScriptBridge.create_callback(_on_equipped_nft_queried)
+
 			_log("PolkaGodot initialized with web interface")
 		else:
 			push_error("PolkaGodot: Failed to get PolkaInterface from JavaScript")
@@ -46,8 +67,35 @@ func _ready():
 		_log("PolkaGodot: Not running in web environment")
 
 
+func _load_config() -> void:
+	var dir = DirAccess.open("res://")
+	dir.list_dir_begin()
+	while true:
+		var filename: String = dir.get_next()
+		if filename.strip_edges().is_empty():
+			break
+		
+		for extension in ["res", "tres", "res.import", "tres.import", "res.remap", "tres.remap"]:
+			if filename.ends_with(extension):
+				var clean_filename: String = filename.trim_suffix(".import").trim_suffix(".remap")
+				var loaded_res = load(clean_filename)
+				if loaded_res is PolkaConfig:
+					_log("User config found: %s" % clean_filename)
+					config = loaded_res
+					return
+
+	var default_config = load("res://addons/polkagodot/config.tres")
+	if default_config is PolkaConfig:
+		config = default_config
+		_log("Loaded default config.")
+		return
+	
+	config = PolkaConfig.new()
+	_log("WARNING: No configuration file found. The extension will not work without a valid configuration.")
+
+
 func _log(message: String):
-	if debug_mode:
+	if config.debug_mode:
 		print("[PolkaGodot] " + message)
 
 
@@ -63,10 +111,7 @@ func connect_wallet(wallet_id: String = "") -> void:
 		return
 
 	_log("Attempting to connect wallet: " + wallet_id if wallet_id else "Attempting to connect wallet...")
-	if wallet_id:
-		js_interface.connectWalletById(wallet_id).then(_callback_wallet_connected)
-	else:
-		js_interface.connectWallet().then(_callback_wallet_connected)
+	js_interface.connectWallet(wallet_id).then(_callback_wallet_connected)
 
 
 func disconnect_wallet() -> void:
@@ -173,6 +218,10 @@ func _on_wallet_connected(args: Array):
 			current_wallet_id = wallet_info.id
 		_log("Wallet connected: " + current_address + " (" + current_wallet_id + ")")
 		wallet_connected.emit(current_address)
+
+		# Automatically fetch local user's NFTs as soon as wallet connects
+		fetch_user_nfts()
+		query_equipped_nft()
 	else:
 		is_connected = false
 		current_address = ""
@@ -187,6 +236,7 @@ func _on_wallet_disconnected(args: Array):
 	current_address = ""
 	current_wallet_id = ""
 	available_accounts = []
+	user_nfts.clear()
 	_log("Wallet disconnected")
 	wallet_disconnected.emit()
 
@@ -223,24 +273,19 @@ func _on_nfts_queried(args: Array):
 		nft_query_failed.emit("Null result received")
 		return
 
-	var result_dict: Dictionary = {}
-	if result is String:
-		var json = JSON.new()
-		var parse_result = json.parse(result)
-		if parse_result == OK:
-			result_dict = json.data
-			_log("Successfully parsed JSON result")
-		else:
-			_log("Failed to parse JSON result: " + json.get_error_message())
-			nft_query_failed.emit("Failed to parse JSON response")
-			return
-	elif result is Dictionary:
-		result_dict = result
-	else:
-		_log("Unexpected result type: " + str(typeof(result)))
-		nft_query_failed.emit("Unexpected result type from JavaScript")
+	if result is not String:
+		_log("ERROR: Expected String from JavaScript, got " + str(typeof(result)))
+		nft_query_failed.emit("Invalid type received from JavaScript")
 		return
 
+	var json = JSON.new()
+	var parse_result = json.parse(result)
+	if parse_result != OK:
+		_log("Failed to parse JSON result: " + json.get_error_message())
+		nft_query_failed.emit("Failed to parse JSON response")
+		return
+
+	var result_dict: Dictionary = json.data
 	if result_dict.has("error") and result_dict.error:
 		_log("NFT query failed: " + str(result_dict.error))
 		nft_query_failed.emit(str(result_dict.error))
@@ -250,20 +295,19 @@ func _on_nfts_queried(args: Array):
 
 
 func show_wallet_management_screen():
-	if not wallet_management_screen:
-		wallet_management_screen = load("res://addons/polkagodot/ui/wallet_management_screen/wallet_management_screen.tscn").instantiate()
-		get_tree().root.add_child(wallet_management_screen)
-		wallet_management_screen.closed.connect(_on_wallet_management_screen_closed)
-
-	if wallet_management_screen.has_method("show_screen"):
-		wallet_management_screen.show_screen()
-	else:
-		wallet_management_screen.show()
+	if wallet_management_screen != null:
+		return
+	
+	wallet_management_screen = load("res://addons/polkagodot/ui/wallet_management_screen/wallet_management_screen.tscn").instantiate()
+	get_tree().root.add_child(wallet_management_screen)
+	wallet_management_screen.closed.connect(_on_wallet_management_screen_closed)
+	wallet_management_screen.show_screen()
 
 	_log("Showing wallet management screen")
 
 
 func _on_wallet_management_screen_closed():
+	wallet_management_screen = null
 	_log("Wallet management screen closed")
 
 
@@ -396,3 +440,256 @@ static func get_erc721_abi() -> Array:
 			"type": "function"
 		}
 	]
+
+
+func fetch_user_nfts():
+	if not is_wallet_connected():
+		_log("Cannot fetch NFTs - no wallet connected")
+		return
+
+	if is_fetching_nfts:
+		_log("Already fetching NFTs")
+		return
+
+	is_fetching_nfts = true
+	user_nfts.clear()
+
+	nfts_queried.connect(_on_user_nfts_fetched, CONNECT_ONE_SHOT)
+	nft_query_failed.connect(_on_user_nft_fetch_failed, CONNECT_ONE_SHOT)
+
+	var query_options = {
+		"user_address": current_address,
+		"rpc_url": config.rpc_url,
+		"ipfs_gateway": config.ipfs_gateway,
+		"from_token_id": 1,
+		"to_token_id": 100,
+		"batch_size": 10
+	}
+
+	_log("Fetching NFTs for user: " + current_address)
+	query_nfts(config.nft_contract, get_erc721_abi(), query_options)
+
+
+func _on_user_nfts_fetched(result: Dictionary):
+	is_fetching_nfts = false
+
+	user_nfts.clear()
+
+	var tokens = result.get("tokens", [])
+	_log("Processing " + str(tokens.size()) + " NFTs for user")
+
+	for token_data in tokens:
+		if token_data is Dictionary:
+			var nft = NFT.new(token_data)
+			user_nfts.append(nft)
+
+			# Start async texture loading for each NFT
+			if not nft.image.is_empty():
+				_load_nft_texture(nft)
+
+	_log("User now has " + str(user_nfts.size()) + " NFTs loaded")
+	user_nfts_fetched.emit(user_nfts)
+
+
+func _on_user_nft_fetch_failed(error: String) -> void:
+	_log("Failed to fetch user NFTs: " + error)
+	is_fetching_nfts = false
+
+
+
+func _load_nft_texture(nft: NFT):
+	var http = HTTPRequest.new()
+	add_child(http)
+
+	http.request_completed.connect(func(result, response_code, headers, body):
+		if response_code == 200:
+			var image = Image.new()
+			var error = OK
+
+			error = image.load_png_from_buffer(body)
+			if error != OK: error = image.load_jpg_from_buffer(body)
+			if error != OK: error = image.load_webp_from_buffer(body)
+			if error != OK: error = image.load_svg_from_buffer(body, 4.0)
+			if error == OK:
+				nft.texture = ImageTexture.create_from_image(image)
+				_log("Loaded texture for NFT #" + str(nft.token_id) + ": " + nft.get_display_name())
+			else:
+				_log("Failed to load texture for NFT #" + str(nft.token_id) + ": Invalid image format")
+		else:
+			_log("Failed to download texture for NFT #" + str(nft.token_id) + ": HTTP " + str(response_code))
+
+		http.queue_free()
+	)
+
+	_log("Downloading texture for NFT #" + str(nft.token_id) + " from: " + nft.image)
+	http.request(nft.image)
+
+
+func show_asset_management_screen():
+	if asset_management_screen != null:
+		return
+	
+	asset_management_screen = load("res://addons/polkagodot/ui/asset_management_screen/asset_management_screen.tscn").instantiate()
+	get_tree().root.add_child(asset_management_screen)
+	asset_management_screen.closed.connect(_on_asset_management_screen_closed)
+	asset_management_screen.show_screen()
+	_log("Showing asset management screen")
+
+
+func _on_asset_management_screen_closed():
+	asset_management_screen = null
+	_log("Asset management screen closed")
+
+
+
+func equip_nft(nft_token_id: int) -> void:
+	if not js_interface:
+		_log("Cannot equip NFT - no JavaScript interface available")
+		return
+
+	if not is_wallet_connected():
+		_log("Cannot equip NFT - wallet not connected")
+		return
+
+	_log("Equipping NFT with token ID: " + str(nft_token_id))
+
+	var error_callback = JavaScriptBridge.create_callback(func(args):
+		_log("NFT equip transaction failed")
+		var error_msg = "Transaction failed"
+		if args.size() > 0:
+			error_msg = str(args[0])
+			_log("Error: " + error_msg)
+		nft_equip_failed.emit(error_msg)
+	)
+
+	js_interface.equipNFT(nft_token_id, config.game_manager_contract, config.get_chain_config_json()).then(_callback_nft_equipped).catch(error_callback)
+
+
+func unequip_nft() -> void:
+	if not js_interface:
+		_log("Cannot unequip NFT - no JavaScript interface available")
+		return
+
+	if not is_wallet_connected():
+		_log("Cannot unequip NFT - wallet not connected")
+		return
+
+	_log("Unequipping NFT")
+
+	var error_callback = JavaScriptBridge.create_callback(func(args):
+		_log("NFT unequip transaction failed")
+		var error_msg = "Transaction failed"
+		if args.size() > 0:
+			error_msg = str(args[0])
+			_log("Error: " + error_msg)
+		nft_unequip_failed.emit(error_msg)
+	)
+
+	js_interface.unequipNFT(config.game_manager_contract, config.get_chain_config_json()).then(_callback_nft_unequipped).catch(error_callback)
+
+
+func query_equipped_nft(player_address: String = "") -> void:
+	if not js_interface:
+		_log("Cannot query equipped NFT - no JavaScript interface available")
+		return
+
+	var address_to_query = player_address if not player_address.is_empty() else current_address
+
+	if address_to_query.is_empty():
+		_log("Cannot query equipped NFT - no address provided")
+		return
+
+	_log("Querying equipped NFT for address: " + address_to_query)
+
+	var error_callback = JavaScriptBridge.create_callback(func(args):
+		_log("NFT equipped query failed")
+		if args.size() > 0:
+			_log("Error: " + str(args[0]))
+	)
+
+	js_interface.queryEquippedNFT(address_to_query, config.game_manager_contract, config.rpc_url).then(_callback_equipped_nft_queried).catch(error_callback)
+
+
+func _on_nft_equipped(args: Array):
+	if args.is_empty():
+		_log("NFT equip transaction completed but no result received")
+		return
+
+	var result = args[0]
+	_log("NFT equip transaction result: " + str(result))
+
+	if not result is String:
+		_log("ERROR: Expected String from JavaScript, got " + str(typeof(result)))
+		return
+
+	var json = JSON.new()
+	var parse_result = json.parse(result)
+	if parse_result != OK:
+		_log("Failed to parse equip result JSON: " + json.get_error_message())
+		return
+
+	var data = json.data
+
+	if data.has("success") and not data.success:
+		var error_msg = data.get("error", "Transaction failed")
+		_log("NFT equip failed: " + error_msg)
+		nft_equip_failed.emit(error_msg)
+		return
+
+	if data.has("tokenId"):
+		equipped_nft_id = int(data.get("tokenId", 0))
+		_log("Successfully equipped NFT #" + str(equipped_nft_id))
+
+		for nft in user_nfts:
+			if nft.token_id == equipped_nft_id:
+				nft_equipped.emit(nft)
+				return
+
+
+func _on_nft_unequipped(args: Array):
+	if args.is_empty():
+		_log("NFT unequip transaction completed but no result received")
+		return
+
+	var result = args[0]
+	_log("NFT unequip transaction result: " + str(result))
+
+	if not result is String:
+		_log("ERROR: Expected String from JavaScript, got " + str(typeof(result)))
+		return
+
+	var json = JSON.new()
+	var parse_result = json.parse(result)
+	if parse_result != OK:
+		_log("Failed to parse unequip result JSON: " + json.get_error_message())
+		return
+
+	var data = json.data
+
+	if data.has("success") and not data.success:
+		var error_msg = data.get("error", "Transaction failed")
+		_log("NFT unequip failed: " + error_msg)
+		nft_unequip_failed.emit(error_msg)
+		return
+
+	_log("NFT unequip transaction completed successfully")
+	equipped_nft_id = 0
+	nft_unequipped.emit()
+
+
+# Callback when equipped NFT query completes
+func _on_equipped_nft_queried(args: Array):
+	if args.is_empty():
+		_log("Equipped NFT query failed: No result received")
+		return
+
+	var result = args[0]
+	_log("Equipped NFT query result: " + str(result))
+
+	var token_id = 0
+
+	token_id = int(result)
+
+	equipped_nft_id = token_id
+	_log("Player has equipped NFT #" + str(equipped_nft_id))
+	equipped_nft_loaded.emit(equipped_nft_id)

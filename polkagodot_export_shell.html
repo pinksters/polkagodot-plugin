@@ -197,7 +197,6 @@ body {
         const ABIEncoder = {
             // Precomputed function selectors
             selectors: {
-                'balanceOf': '0x70a08231',       // balanceOf(address)
                 'ownerOf': '0x6352211e',         // ownerOf(uint256)
                 'tokenURI': '0xc87b56dd',        // tokenURI(uint256)
                 'totalSupply': '0x18160ddd',     // totalSupply()
@@ -458,22 +457,30 @@ body {
             },
 
             async ethCall(to, data, rpcUrl) {
+                const normalizedTo = to.startsWith('0x') ? to : '0x' + to;
+                const normalizedData = data.startsWith('0x') ? data : '0x' + data;
+
                 if (rpcUrl) {
+                    const requestPayload = {
+                        jsonrpc: '2.0',
+                        method: 'eth_call',
+                        params: [{ to: normalizedTo, data: normalizedData }, 'latest'],
+                        id: 1
+                    };
+
                     const response = await fetch(rpcUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: 'eth_call',
-                            params: [{ to, data }, 'latest'],
-                            id: 1
-                        })
+                        body: JSON.stringify(requestPayload)
                     });
                     const result = await response.json();
+
                     if (result.error) {
-                        throw new Error(result.error.message || 'RPC call failed');
+                        const errorMsg = result.error.message || 'RPC call failed';
+                        const errorData = result.error.data ? ` (data: ${result.error.data})` : '';
+                        throw new Error(errorMsg + errorData);
                     }
                     return result.result;
                 }
@@ -484,16 +491,102 @@ body {
                 }
                 return await provider.request({
                     method: 'eth_call',
-                    params: [{ to, data }, 'latest']
+                    params: [{ to: normalizedTo, data: normalizedData }, 'latest']
                 });
             }
         };
 
         WalletManager.init();
 
-
         const STORAGE_PREFIX = 'polka_';
         const SIGNATURE_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+        // Chain verification and switching utilities
+        const ChainManager = {
+            async getCurrentChainId() {
+                const provider = WalletManager.provider || window.ethereum;
+                if (!provider) {
+                    throw new Error('No wallet provider available');
+                }
+
+                try {
+                    const chainId = await provider.request({ method: 'eth_chainId' });
+                    return chainId;
+                } catch (error) {
+                    console.error('[ChainManager] Error getting chain ID:', error);
+                    throw error;
+                }
+            },
+
+            async isOnCorrectChain(expectedChainIdHex) {
+                try {
+                    const currentChainId = await this.getCurrentChainId();
+                    const isCorrect = currentChainId.toLowerCase() === expectedChainIdHex.toLowerCase();
+                    console.log('[ChainManager] Current chain:', currentChainId, '| Expected:', expectedChainIdHex, '| Match:', isCorrect);
+                    return isCorrect;
+                } catch (error) {
+                    console.error('[ChainManager] Error checking chain:', error);
+                    return false;
+                }
+            },
+
+            async switchToCorrectChain(chainConfigJson) {
+                const provider = WalletManager.provider || window.ethereum;
+                if (!provider) {
+                    throw new Error('No wallet provider available');
+                }
+
+                const chainConfig = JSON.parse(chainConfigJson);
+
+                try {
+                    console.log('[ChainManager] Attempting to switch to', chainConfig.chainName, '(Chain ID:', chainConfig.chainId + ')');
+
+                    // Try to switch to the chain
+                    await provider.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: chainConfig.chainId }]
+                    });
+
+                    console.log('[ChainManager] Successfully switched to', chainConfig.chainName);
+                    return { success: true, action: 'switched' };
+
+                } catch (switchError) {
+                    // Error code 4902 means the chain hasn't been added to the wallet yet
+                    if (switchError.code === 4902) {
+                        console.log('[ChainManager] Chain not found in wallet, attempting to add it...');
+
+                        try {
+                            await provider.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [chainConfig]
+                            });
+
+                            console.log('[ChainManager] Successfully added and switched to', chainConfig.chainName);
+                            return { success: true, action: 'added' };
+
+                        } catch (addError) {
+                            console.error('[ChainManager] Error adding chain:', addError);
+                            throw new Error('Failed to add ' + chainConfig.chainName + ' to wallet: ' + addError.message);
+                        }
+                    } else {
+                        console.error('[ChainManager] Error switching chain:', switchError);
+                        throw new Error('Failed to switch to ' + chainConfig.chainName + ': ' + switchError.message);
+                    }
+                }
+            },
+
+            async ensureCorrectChain(expectedChainIdHex, chainConfigJson) {
+                const isCorrect = await this.isOnCorrectChain(expectedChainIdHex);
+
+                if (!isCorrect) {
+                    console.log('[ChainManager] Wrong chain detected. Prompting user to switch...');
+                    return await this.switchToCorrectChain(chainConfigJson);
+                }
+
+                console.log('[ChainManager] Already on correct chain');
+                return { success: true, action: 'already_correct' };
+            }
+        };
 
         const PolkaInterface = {
             hasEthereumProvider() {
@@ -588,13 +681,7 @@ body {
             },
 
             async connectWallet(walletId = null) {
-                const result = await WalletManager.connectWallet(walletId);
-                return result;
-            },
-
-            async connectWalletById(walletId) {
-                const result = await WalletManager.connectWallet(walletId);
-                return result;
+                return WalletManager.connectWallet(walletId);
             },
 
             async requestAccountSelection() {
@@ -608,8 +695,7 @@ body {
             },
 
             getCurrentWalletAddress() {
-                const address = WalletManager.getCurrentWalletAddress();
-                return address;
+                return WalletManager.getCurrentWalletAddress();
             },
 
             getDiscoveredWallets() {
@@ -631,8 +717,7 @@ body {
             },
 
             async selectAccount(address) {
-                const result = await WalletManager.selectAccount(address);
-                return result;
+                return WalletManager.selectAccount(address);
             },
 
             getCurrentWalletInfo() {
@@ -641,13 +726,11 @@ body {
             },
 
             async signMessage(message) {
-                const signature = await WalletManager.signMessage(message);
-                return signature;
+                return WalletManager.signMessage(message);
             },
 
             async disconnectWallet() {
-                const result = await WalletManager.disconnectWallet();
-                return result;
+                return WalletManager.disconnectWallet();
             },
 
             isWalletConnected() {
@@ -656,19 +739,13 @@ body {
 
             async queryNFTs(contractAddress, contractABIJson, optionsJson = '{}') {
                 try {
-                    let options;
-                    
-                    try {
-                        options = JSON.parse(optionsJson);
-                    } catch (parseError) {
-                        throw new Error('Failed to parse JSON parameters: ' + parseError.message);
-                    }
+                    const options = JSON.parse(optionsJson);
                     
                     if (!contractAddress) {
                         throw new Error('Contract address is required');
                     }
 
-                    const userAddress = options.user_address || options.userAddress || WalletManager.currentAddress;
+                    const userAddress = options.user_address || WalletManager.currentAddress;
                     if (!userAddress) {
                         throw new Error('User address is required. Either connect wallet or provide user_address in options.');
                     }
@@ -688,39 +765,21 @@ body {
 
             async _queryNFTsFromContract(contractAddress, userAddress, options) {
                 const tokens = [];
-                const fromTokenId = options.from_token_id || options.fromTokenId || 0;
-                const toTokenId = options.to_token_id || options.toTokenId || 10000;
-                const batchSize = options.batch_size || options.batchSize || 100;
-                
-                try {
-                    let balance = null;
-                    try {
-                        console.log('[PolkaInterface] Calling balanceOf for:', userAddress);
-                        const callData = ABIEncoder.buildCallData('balanceOf', ABIEncoder.encodeAddress(userAddress));
-                        console.log('[PolkaInterface] Call data:', callData);
-                        const rpcUrl = options.rpc_url || options.rpcUrl;
-                        const result = await WalletManager.ethCall(contractAddress, callData, rpcUrl);
-                        console.log('[PolkaInterface] Raw result:', result);
-                        balance = ABIEncoder.decodeUint256(result);
-                        console.log('[PolkaInterface] Decoded balance:', balance);
-                    } catch (e) {
-                        console.log('balanceOf error:', e.message || e);
-                        console.log('Will enumerate tokens instead');
-                    }
+                const fromTokenId = options.from_token_id || 0;
+                const toTokenId = options.to_token_id || 10000;
+                const batchSize = options.batch_size || 100;
 
+                try {
+                    
                     const promises = [];
-                    for (let i = fromTokenId; i <= toTokenId && (balance === null || tokens.length < balance); i += batchSize) {
+                    for (let i = fromTokenId; i <= toTokenId; i += batchSize) {
                         const batchPromise = this._queryTokenBatch(contractAddress, userAddress, i, Math.min(i + batchSize - 1, toTokenId), options);
                         promises.push(batchPromise);
-                        
+
                         if (promises.length >= 5) {
                             const batchResults = await Promise.all(promises);
                             batchResults.forEach(batch => tokens.push(...batch));
                             promises.length = 0;
-                            
-                            if (balance !== null && tokens.length >= balance) {
-                                break;
-                            }
                         }
                     }
 
@@ -750,7 +809,7 @@ body {
                     const promise = (async () => {
                         try {
                             const callData = ABIEncoder.buildCallData('ownerOf', ABIEncoder.encodeUint256(tokenId));
-                            const rpcUrl = options.rpc_url || options.rpcUrl;
+                            const rpcUrl = options.rpc_url;
                             const owner = await WalletManager.ethCall(contractAddress, callData, rpcUrl);
                             const ownerAddress = ABIEncoder.decodeAddress(owner);
                             if (ownerAddress && ownerAddress.toLowerCase() === userAddress.toLowerCase()) {
@@ -797,7 +856,7 @@ body {
             async _fetchSingleTokenMetadata(contractAddress, tokenId, options) {
                 try {
                     const callData = ABIEncoder.buildCallData('tokenURI', ABIEncoder.encodeUint256(tokenId));
-                    const rpcUrl = options.rpc_url || options.rpcUrl;
+                    const rpcUrl = options.rpc_url;
                     const result = await WalletManager.ethCall(contractAddress, callData, rpcUrl);
                     const tokenURI = ABIEncoder.decodeString(result);
                     
@@ -822,7 +881,7 @@ body {
             async _fetchMetadataWithCORS(uri, options) {
                 let fetchUri = uri;
                 if (uri.startsWith('ipfs://')) {
-                    const ipfsGateway = options.ipfsGateway || 'https://ipfs.io/ipfs/';
+                    const ipfsGateway = options.ipfs_gateway || 'https://ipfs.io/ipfs/';
                     fetchUri = uri.replace('ipfs://', ipfsGateway);
                 }
                 
@@ -858,6 +917,160 @@ body {
                         error: 'Failed to fetch metadata: ' + error.message
                     };
                 }
+            },
+
+            async equipNFT(tokenId, gameManagerAddress, chainConfigJson) {
+                try {
+                    const provider = WalletManager.provider || window.ethereum;
+                    if (!provider) {
+                        throw new Error('No wallet connected');
+                    }
+
+                    if (!WalletManager.currentAddress) {
+                        throw new Error('No wallet address available');
+                    }
+
+                    const chainConfig = JSON.parse(chainConfigJson);
+
+                    // Ensure wallet is on the correct chain before transaction
+                    const chainResult = await ChainManager.ensureCorrectChain(chainConfig.chainId, chainConfigJson);
+
+                    if (!chainResult.success) {
+                        throw new Error('Failed to switch to ' + chainConfig.chainName + ' network');
+                    }
+
+                    console.log('[PolkaInterface] Equipping NFT #' + tokenId);
+
+                    // Encode the function call for equipHat(tokenId)
+                    const selector = '0x20210749'; // equipHat(uint256) function selector
+                    const encodedTokenId = ABIEncoder.encodeUint256(tokenId);
+                    const data = selector + encodedTokenId;
+
+                    // Send transaction
+                    const txHash = await provider.request({
+                        method: 'eth_sendTransaction',
+                        params: [{
+                            from: WalletManager.currentAddress,
+                            to: gameManagerAddress,
+                            data: data
+                        }]
+                    });
+
+                    console.log('[PolkaInterface] Equip transaction sent:', txHash);
+
+                    // Wait for transaction receipt
+                    const res = await this._waitForTransaction(provider, txHash);
+                    console.log(res);
+                    console.log('[PolkaInterface] NFT #' + tokenId + ' equipped successfully');
+                    return JSON.stringify({ success: true, tokenId: tokenId, txHash: txHash });
+
+                } catch (error) {
+                    console.error('[PolkaInterface] Error equipping NFT:', error);
+                    return JSON.stringify({ success: false, error: error.message || 'Transaction failed' });
+                }
+            },
+
+            async unequipNFT(gameManagerAddress, chainConfigJson) {
+                try {
+                    const provider = WalletManager.provider || window.ethereum;
+                    if (!provider) {
+                        throw new Error('No wallet connected');
+                    }
+
+                    if (!WalletManager.currentAddress) {
+                        throw new Error('No wallet address available');
+                    }
+
+                    const chainConfig = JSON.parse(chainConfigJson);
+
+                    // Ensure wallet is on the correct chain before transaction
+                    const chainResult = await ChainManager.ensureCorrectChain(chainConfig.chainId, chainConfigJson);
+
+                    if (!chainResult.success) {
+                        throw new Error('Failed to switch to ' + chainConfig.chainName + ' network');
+                    }
+
+                    console.log('[PolkaInterface] Unequipping NFT');
+
+                    // Encode the function call for unequipHat()
+                    const selector = '0x9871bf3c'; // unequipHat() function selector
+                    const data = selector;
+
+                    // Send transaction
+                    const txHash = await provider.request({
+                        method: 'eth_sendTransaction',
+                        params: [{
+                            from: WalletManager.currentAddress,
+                            to: gameManagerAddress,
+                            data: data
+                        }]
+                    });
+
+                    console.log('[PolkaInterface] Unequip transaction sent:', txHash);
+
+                    // Wait for transaction receipt
+                    await this._waitForTransaction(provider, txHash);
+
+                    console.log('[PolkaInterface] NFT unequipped successfully');
+                    return JSON.stringify({ success: true, tokenId: 0, txHash: txHash });
+
+                } catch (error) {
+                    console.error('[PolkaInterface] Error unequipping NFT:', error);
+                    return JSON.stringify({ success: false, error: error.message || 'Transaction failed' });
+                }
+            },
+
+            async queryEquippedNFT(playerAddress, gameManagerAddress, rpcUrl) {
+                try {
+                    console.log('[PolkaInterface] Querying equipped NFT for:', playerAddress);
+
+                    // Encode the function call for getEquippedHat(address)
+                    const selector = '0x018e8b41'; // getEquippedHat(address) function selector
+                    const encodedAddress = ABIEncoder.encodeAddress(playerAddress);
+                    const data = selector + encodedAddress;
+
+                    // Use RPC URL for read-only call
+                    const result = await WalletManager.ethCall(gameManagerAddress, data, rpcUrl);
+
+                    // Decode the result (uint256)
+                    const equippedTokenId = ABIEncoder.decodeUint256(result);
+
+                    console.log('[PolkaInterface] Player has equipped NFT #' + equippedTokenId);
+                    return equippedTokenId;
+
+                } catch (error) {
+                    console.error('[PolkaInterface] Error querying equipped NFT:', error);
+                    throw error;
+                }
+            },
+
+            async _waitForTransaction(provider, txHash, maxAttempts = 30) {
+                for (let i = 0; i < maxAttempts; i++) {
+                    try {
+                        const receipt = await provider.request({
+                            method: 'eth_getTransactionReceipt',
+                            params: [txHash]
+                        });
+
+                        if (receipt && receipt.blockNumber) {
+                            if (receipt.status === '0x1' || receipt.status === 1) {
+                                console.log('[PolkaInterface] Transaction confirmed:', txHash);
+                                return receipt;
+                            } else {
+                                throw new Error('Transaction failed');
+                            }
+                        }
+                    } catch (error) {
+                        if (i === maxAttempts - 1) {
+                            throw error;
+                        }
+                    }
+
+                    // Wait 1 second before checking again
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+
+                throw new Error('Transaction timeout - receipt not found after ' + maxAttempts + ' attempts');
             }
         };
 
