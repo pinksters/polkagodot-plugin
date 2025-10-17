@@ -1,0 +1,133 @@
+[gd_scene load_steps=7 format=3 uid="uid://bxq7n2kfmqwxe"]
+
+[ext_resource type="Script" uid="uid://dd3je7eflte32" path="res://addons/polkagodot/ui/nft_asset_list_item/nft_asset_list_item.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1pp6"]
+bg_color = Color(0.14006415, 2.641175e-06, 0.106241725, 0.9490196)
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0, 0.764706, 0.4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sjpvn"]
+bg_color = Color(0.7835232, 0.78352356, 0.78352314, 0.9490196)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0, 0.764706, 0.4)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7inrx"]
+bg_color = Color(0.5557045, 0.2705655, 0.45201963, 0.9490196)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_equipped"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 0.247059, 0.909804, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_size = 4
+
+[node name="NFTAssetListItem" type="Control"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 96.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1")
+
+[node name="ClickablePanel" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_x1pp6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_sjpvn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_7inrx")
+
+[node name="ContentContainer" type="HBoxContainer" parent="ClickablePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Image" type="TextureRect" parent="ClickablePanel/ContentContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("1")
+
+[node name="TokenIdLabel" type="Label" parent="ClickablePanel/ContentContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 16
+text = "#001"
+vertical_alignment = 1
+
+[node name="NameLabel" type="Label" parent="ClickablePanel/ContentContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 18
+text = "Pink Hat"
+vertical_alignment = 1
+
+[node name="EquippedBadge" type="Label" parent="ClickablePanel/ContentContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_equipped")
+text = "EQUIPPED"
+horizontal_alignment = 1
+vertical_alignment = 1

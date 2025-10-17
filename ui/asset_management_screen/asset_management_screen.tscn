@@ -1,0 +1,335 @@
+[gd_scene load_steps=23 format=3 uid="uid://b7xq8nmkfqwxe"]
+
+[ext_resource type="Script" uid="uid://chivtew3s23rm" path="res://addons/polkagodot/ui/asset_management_screen/asset_management_screen.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
+[ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="4"]
+[ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="5"]
+[ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="6"]
+[ext_resource type="Texture2D" uid="uid://c80g25out4y1r" path="res://addons/polkagodot/assets/icons/refresh.svg" id="7"]
+[ext_resource type="PackedScene" uid="uid://dxvqf8h7kqnxm" path="res://addons/polkagodot/ui/user_assets_list_view/user_assets_list_view.tscn" id="8"]
+[ext_resource type="Texture2D" uid="uid://dwvrt0fapc12f" path="res://addons/polkagodot/assets/icons/bars-3.svg" id="8_4tdpf"]
+[ext_resource type="Texture2D" uid="uid://drskufhqo5mcm" path="res://addons/polkagodot/assets/icons/table-cells.svg" id="8_6eap7"]
+[ext_resource type="PackedScene" uid="uid://c8qv3f7h2knxm" path="res://addons/polkagodot/ui/user_assets_grid_view/user_assets_grid_view.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://dkv8qiaxm2nry" path="res://addons/polkagodot/ui/asset_action_view/asset_action_view.tscn" id="10"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eap7"]
+content_margin_left = 20.0
+bg_color = Color(1, 0.31155464, 0.66277087, 1)
+border_width_left = 1
+border_width_bottom = 1
+border_color = Color(1, 0.7623703, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.55200005)
+shadow_size = 1
+shadow_offset = Vector2(1, -1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wmek"]
+bg_color = Color(0.60457706, 4.5724214e-06, 0.3918517, 0.9490196)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0, 0.764706, 0.4)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4tdpf"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 0.0
+content_margin_bottom = 10.0
+bg_color = Color(0.10767966, 0.07870313, 0.1300605, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+shadow_color = Color(0, 0, 0, 0.37)
+shadow_size = 10
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jjfh2"]
+content_margin_left = 30.0
+content_margin_right = 15.0
+bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.6509804)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.19434926, 0.19434929, 0.19434911, 1)
+corner_radius_top_left = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d4fdj"]
+content_margin_left = 30.0
+content_margin_right = 15.0
+bg_color = Color(0.11774104, 0.11774104, 0.11774104, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9929356, 0.5513942, 1, 1)
+corner_radius_top_left = 30
+corner_radius_bottom_left = 30
+shadow_color = Color(1, 0.6203328, 0.81350154, 0.6)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v422f"]
+content_margin_left = 30.0
+content_margin_right = 15.0
+bg_color = Color(0.21230498, 0.2123048, 0.21230483, 0.6509804)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33660746, 0.3366077, 0.33660752, 1)
+corner_radius_top_left = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qae3n"]
+content_margin_left = 15.0
+content_margin_right = 30.0
+bg_color = Color(0.06100855, 0.06100855, 0.06100855, 0.652)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.19434926, 0.19434929, 0.19434911, 1)
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3c0i"]
+content_margin_left = 15.0
+content_margin_right = 30.0
+bg_color = Color(0.9738857, 0.29431608, 0.6322994, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.99215686, 0.5529412, 1, 1)
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+shadow_color = Color(1, 0.61960787, 0.8117647, 0.6)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mfxfg"]
+content_margin_left = 15.0
+content_margin_right = 30.0
+bg_color = Color(0.21230498, 0.2123048, 0.21230483, 0.6509804)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33660746, 0.3366077, 0.33660752, 1)
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u7oht"]
+content_margin_left = 15.0
+content_margin_right = 30.0
+bg_color = Color(0.11774104, 0.11774104, 0.11774104, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9929356, 0.5513942, 1, 1)
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+shadow_color = Color(1, 0.6203328, 0.81350154, 0.6)
+shadow_size = 4
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
+
+[node name="AssetManagementScreen" type="CanvasLayer"]
+layer = 69420
+script = ExtResource("1")
+
+[node name="BackgroundTint" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.85)
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+z_index = 2
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -162.0
+offset_top = 8.0
+offset_right = 166.0
+offset_bottom = 56.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_6eap7")
+text = "My Assets"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -261.0
+offset_right = 400.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0wmek")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderPanel" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+z_index = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4tdpf")
+
+[node name="HeaderContents" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HeaderContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents"]
+layout_mode = 2
+
+[node name="TabContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ListViewButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/TabContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(137.71, 40)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_disabled_color = Color(1, 0.6155507, 1, 1)
+theme_override_colors/icon_disabled_color = Color(1, 0.6156863, 1, 1)
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_jjfh2")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_d4fdj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_v422f")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_d4fdj")
+text = "List"
+icon = ExtResource("8_4tdpf")
+icon_alignment = 2
+expand_icon = true
+
+[node name="GridViewButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/TabContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(137.71, 40)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_disabled_color = Color(1, 0.6156863, 1, 1)
+theme_override_colors/icon_disabled_color = Color(1, 0.6156863, 1, 1)
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_qae3n")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_s3c0i")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mfxfg")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_u7oht")
+disabled = true
+text = "Grid"
+icon = ExtResource("8_6eap7")
+expand_icon = true
+
+[node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128.03, 40)
+layout_mode = 2
+size_flags_horizontal = 10
+focus_mode = 0
+theme_override_styles/normal = ExtResource("4")
+theme_override_styles/pressed = ExtResource("5")
+theme_override_styles/hover = ExtResource("6")
+
+[node name="Icon" type="TextureRect" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/RefreshButton"]
+modulate = Color(1, 1, 1, 0.652)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -12.5
+offset_right = 33.0
+offset_bottom = 12.5
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/RefreshButton"]
+modulate = Color(1, 1, 1, 0.652)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 16
+text = "Refresh"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+focus_mode = 0
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxEmpty_close")
+text = "X"
+
+[node name="ContentContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="ListViewContent" type="Control" parent="PanelContainer/VBoxContainer/ContentContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="UserAssetsListView" parent="PanelContainer/VBoxContainer/ContentContainer/ListViewContent" instance=ExtResource("8")]
+layout_mode = 1
+
+[node name="GridViewContent" type="Control" parent="PanelContainer/VBoxContainer/ContentContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="UserAssetsGridView" parent="PanelContainer/VBoxContainer/ContentContainer/GridViewContent" instance=ExtResource("9")]
+layout_mode = 1
+
+[node name="AssetActionView" parent="." instance=ExtResource("10")]
+unique_name_in_owner = true
+visible = false

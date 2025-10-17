@@ -1,0 +1,220 @@
+[gd_scene load_steps=11 format=3 uid="uid://bwmmycj1y86fd"]
+
+[ext_resource type="Script" uid="uid://dd3je7eflte32" path="res://addons/polkagodot/ui/nft_asset_list_item/nft_asset_list_item.gd" id="1_copbi"]
+[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3_6jbvk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vlpjh"]
+bg_color = Color(0.2400937, 0, 0.18631536, 1)
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 1)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sjpvn"]
+bg_color = Color(0.7835232, 0.78352356, 0.78352314, 0.9490196)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0, 0.764706, 0.4)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7inrx"]
+bg_color = Color(0.23392558, 0.2339254, 0.23392543, 0.9490196)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.247059, 0.909804, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0, 1, 0.6)
+shadow_size = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vlpjh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jbvk"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.87764335, 0.39896294, 0.7932749, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40rhf"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.15656891, 1.329612e-06, 0.105920784, 1)
+draw_center = false
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.8776983, 0.39875868, 0.79298174, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+shadow_color = Color(0, 0, 0, 1)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_copbi"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.15656891, 1.329612e-06, 0.105920784, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.87764335, 0.39896294, 0.7932749, 1)
+corner_radius_top_right = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_equipped"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 0.247059, 0.909804, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_size = 4
+
+[node name="NFTAssetGridItem" type="Control"]
+custom_minimum_size = Vector2(220, 250)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 220.0
+offset_bottom = 250.0
+size_flags_horizontal = 3
+script = ExtResource("1_copbi")
+
+[node name="ClickablePanel" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_vlpjh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_sjpvn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_7inrx")
+script = ExtResource("1_copbi")
+
+[node name="NameLabel" type="Label" parent="ClickablePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3_6jbvk")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vlpjh")
+text = "Pink Hat"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+text_overrun_behavior = 3
+
+[node name="Image" type="TextureRect" parent="ClickablePanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ImageFrameBackground" type="Panel" parent="ClickablePanel/Image"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6jbvk")
+
+[node name="ImageFrameForeground" type="Panel" parent="ClickablePanel/Image"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_40rhf")
+
+[node name="TokenIdLabel" type="Label" parent="ClickablePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -61.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 35.0
+grow_horizontal = 0
+size_flags_horizontal = 0
+theme_override_fonts/font = ExtResource("3_6jbvk")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_copbi")
+text = "#001"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="EquippedBadge" type="Label" parent="ClickablePanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 100.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_fonts/font = ExtResource("3_6jbvk")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_equipped")
+text = "EQUIPPED"
+horizontal_alignment = 1
+vertical_alignment = 1
