@@ -45,7 +45,6 @@ func _update_button_state():
 		new_state = ButtonState.NO_WALLETS
 		label.text = "No wallet detected"
 		disabled = true
-
 	
 	if new_state != current_state:
 		current_state = new_state

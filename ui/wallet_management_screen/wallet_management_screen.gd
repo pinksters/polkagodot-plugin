@@ -232,8 +232,7 @@ func _on_disconnect_button_pressed():
 
 
 func _on_close_button_pressed():
-	closed.emit()
-	hide()
+	close()
 
 
 func _on_wallet_connected(address: String):
@@ -242,8 +241,9 @@ func _on_wallet_connected(address: String):
 	current_wallet_id = PolkaGodot.current_wallet_id
 	selected_wallet_id = current_wallet_id
 	selected_account = address
-	_update_wallet_list()
-	_update_ui_state()
+	#_update_wallet_list()
+	#_update_ui_state()
+	close()
 
 
 func _on_wallet_disconnected():
@@ -268,8 +268,9 @@ func show_screen():
 	_refresh_wallets()
 
 
-func hide_screen():
-	hide()
+func close():
+	closed.emit()
+	queue_free()
 
 
 func _on_account_selection_update(_address: String):
