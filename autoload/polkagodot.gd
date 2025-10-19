@@ -45,7 +45,7 @@ var user_nfts: Array[NFT] = []
 var is_fetching_nfts: bool = false
 var equipped_nft_id: int = 0
 
-func _ready():
+func _init() -> void:
 	_load_config()
 	
 	if OS.has_feature("web"):
@@ -80,8 +80,8 @@ func _load_config() -> void:
 				var clean_filename: String = filename.trim_suffix(".import").trim_suffix(".remap")
 				var loaded_res = load(clean_filename)
 				if loaded_res is PolkaConfig:
-					_log("User config found: %s" % clean_filename)
 					config = loaded_res
+					_log("User config found: %s" % clean_filename)
 					return
 
 	var default_config = load("res://addons/polkagodot/config.tres")
