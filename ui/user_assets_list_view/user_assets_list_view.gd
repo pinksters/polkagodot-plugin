@@ -1,7 +1,7 @@
 extends AssetListDisplay
 
 @onready var scroll_container: ScrollContainer = $ScrollContainer
-@onready var list_container: VBoxContainer = $ScrollContainer/ListContainer
+@onready var list_container: VBoxContainer = %ListContainer
 @onready var empty_state_label: Label = $EmptyStateLabel
 @onready var loading_indicator: Control = $LoadingIndicator
 
