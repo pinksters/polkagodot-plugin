@@ -35,11 +35,9 @@ func set_display_name(value: String) -> void:
 func set_is_selected(value: bool) -> void:
 	is_selected = value
 	if is_selected:
-		modulate = Color("ffc1efff")
 		self_modulate.a = 1.0
 		selected_indicator.modulate.a = 1.0
 	else:
-		modulate = Color(0.921, 0.921, 0.921, 1.0)
 		self_modulate.a = 0.4
 		selected_indicator.modulate.a = 0.0
 

@@ -2,9 +2,13 @@ extends CanvasLayer
 
 signal closed()
 
+const BTN_COLOR_EQUIP := Color(0.722, 1.0, 0.49)
+const BTN_COLOR_UNEQUIP := Color(1.0, 0.482, 0.361)
+
 @onready var card_view = $"3DCardView"
 @onready var status_label: Label = %StatusLabel
 @onready var action_button: Button = %ActionButton
+@onready var action_button_label: Label = %ActionButton/Label
 @onready var close_button: Button = %CloseButton
 @onready var loading_overlay: ColorRect = %LoadingOverlay
 @onready var loading_label: Label = %LoadingLabel
@@ -50,10 +54,12 @@ func _update_equipped_status():
 	
 	if is_equipped:
 		status_label.text = "Equipped"
-		action_button.text = "Unequip"
+		action_button.self_modulate = BTN_COLOR_UNEQUIP
+		action_button_label.text = "Unequip"
 	else:
 		status_label.text = "Not Equipped"
-		action_button.text = "Equip"
+		action_button.self_modulate = BTN_COLOR_EQUIP
+		action_button_label.text = "Equip"
 
 
 func _on_action_button_pressed():

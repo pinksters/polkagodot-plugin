@@ -1,8 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://b8jwxp4d7nqxm"]
+[gd_scene load_steps=12 format=3 uid="uid://b8jwxp4d7nqxm"]
 
 [ext_resource type="Script" uid="uid://caivepyn6yqym" path="res://addons/polkagodot/ui/wallet_management_screen/wallet_option_button/wallet_option_button.gd" id="1_0xnqg"]
 [ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="1_dku1a"]
-[ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="2_eeda8"]
+[ext_resource type="StyleBox" uid="uid://bfvuljm0fcpwt" path="res://addons/polkagodot/assets/styles/btn_selected.tres" id="2_eeda8"]
 [ext_resource type="Texture2D" uid="uid://cqyr0dwrk5ifu" path="res://addons/polkagodot/assets/wallet-icons/talisman.png" id="2_yvu3v"]
 [ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="3_ig653"]
 [ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="6_eeda8"]
@@ -31,6 +31,24 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmlwx"]
+bg_color = Color(1, 0.8209037, 0.8935139, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(1, 0.2147052, 0.99641603, 0.6)
+shadow_size = 11
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qml8v"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(0.5684909, 0.5199774, 1, 0.60800004)
+shadow_color = Color(0.887035, 0, 0.98803645, 0.6)
+shadow_size = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eeda8"]
 draw_center = false
 border_width_left = 3
@@ -48,6 +66,7 @@ expand_margin_right = 3.0
 expand_margin_bottom = 3.0
 
 [node name="WalletOptionButton" type="Button"]
+self_modulate = Color(0.22376983, 0.62458503, 1, 0.768)
 custom_minimum_size = Vector2(300, 80)
 size_flags_horizontal = 3
 focus_mode = 0
@@ -57,6 +76,46 @@ theme_override_styles/hover = ExtResource("3_ig653")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_ig653")
 theme_override_styles/focus = SubResource("StyleBoxFlat_p6ji5")
 script = ExtResource("1_0xnqg")
+
+[node name="SelectedIndicator" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(4, 30)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -22.0
+offset_right = 11.0
+offset_bottom = 23.0
+grow_vertical = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gmlwx")
+
+[node name="SelectedLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -98.00003
+offset_top = -16.0
+offset_right = -4.0
+offset_bottom = 6.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = -0.2617994
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("6_eeda8")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_qml8v")
+text = "Selected"
+vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -96,6 +155,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_eeda8")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("6_eeda8")
 text = "Wallet Name"
 vertical_alignment = 1

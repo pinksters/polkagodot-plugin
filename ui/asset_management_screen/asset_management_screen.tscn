@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://chivtew3s23rm" path="res://addons/polkagodot/ui/asset_management_screen/asset_management_screen.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
+[ext_resource type="StyleBox" uid="uid://cwebuwbxahvvi" path="res://addons/polkagodot/assets/styles/content_panel.tres" id="3_6eap7"]
 [ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="4"]
 [ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="5"]
 [ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="6"]
@@ -11,35 +12,22 @@
 [ext_resource type="Texture2D" uid="uid://drskufhqo5mcm" path="res://addons/polkagodot/assets/icons/table-cells.svg" id="8_6eap7"]
 [ext_resource type="PackedScene" uid="uid://c8qv3f7h2knxm" path="res://addons/polkagodot/ui/user_assets_grid_view/user_assets_grid_view.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://dkv8qiaxm2nry" path="res://addons/polkagodot/ui/asset_action_view/asset_action_view.tscn" id="10"]
+[ext_resource type="StyleBox" uid="uid://catn70risnbl3" path="res://addons/polkagodot/assets/styles/btn_disabled.tres" id="10_jjfh2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eap7"]
 content_margin_left = 20.0
-bg_color = Color(1, 0.31155464, 0.66277087, 1)
-border_width_left = 1
-border_width_bottom = 1
+bg_color = Color(0, 0, 0, 0.45900002)
+border_width_top = 2
+border_width_right = 2
 border_color = Color(1, 0.7623703, 1, 1)
+border_blend = true
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
-shadow_color = Color(0, 0, 0, 0.55200005)
-shadow_size = 1
-shadow_offset = Vector2(1, -1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wmek"]
-bg_color = Color(0.60457706, 4.5724214e-06, 0.3918517, 0.9490196)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 0.247059, 0.909804, 1)
-border_blend = true
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(1, 0, 0.764706, 0.4)
-shadow_size = 20
+shadow_color = Color(0.7328635, 0.5181051, 0.8710748, 0.5529412)
+shadow_size = 4
+shadow_offset = Vector2(-1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4tdpf"]
 content_margin_left = 10.0
@@ -62,10 +50,8 @@ shadow_offset = Vector2(0, 5)
 content_margin_left = 30.0
 content_margin_right = 15.0
 bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.6509804)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.19434926, 0.19434929, 0.19434911, 1)
 corner_radius_top_left = 30
 corner_radius_bottom_left = 30
@@ -74,10 +60,8 @@ corner_radius_bottom_left = 30
 content_margin_left = 30.0
 content_margin_right = 15.0
 bg_color = Color(0.11774104, 0.11774104, 0.11774104, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.9929356, 0.5513942, 1, 1)
 corner_radius_top_left = 30
 corner_radius_bottom_left = 30
@@ -88,10 +72,8 @@ shadow_size = 4
 content_margin_left = 30.0
 content_margin_right = 15.0
 bg_color = Color(0.21230498, 0.2123048, 0.21230483, 0.6509804)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.33660746, 0.3366077, 0.33660752, 1)
 corner_radius_top_left = 30
 corner_radius_bottom_left = 30
@@ -100,10 +82,8 @@ corner_radius_bottom_left = 30
 content_margin_left = 15.0
 content_margin_right = 30.0
 bg_color = Color(0.06100855, 0.06100855, 0.06100855, 0.652)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.19434926, 0.19434929, 0.19434911, 1)
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -112,10 +92,8 @@ corner_radius_bottom_right = 30
 content_margin_left = 15.0
 content_margin_right = 30.0
 bg_color = Color(0.9738857, 0.29431608, 0.6322994, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.99215686, 0.5529412, 1, 1)
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -126,10 +104,8 @@ shadow_size = 5
 content_margin_left = 15.0
 content_margin_right = 30.0
 bg_color = Color(0.21230498, 0.2123048, 0.21230483, 0.6509804)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.33660746, 0.3366077, 0.33660752, 1)
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -138,17 +114,13 @@ corner_radius_bottom_right = 30
 content_margin_left = 15.0
 content_margin_right = 30.0
 bg_color = Color(0.11774104, 0.11774104, 0.11774104, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_top = 2
+border_width_right = 2
 border_color = Color(0.9929356, 0.5513942, 1, 1)
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 shadow_color = Color(1, 0.6203328, 0.81350154, 0.6)
 shadow_size = 4
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_close"]
 
 [node name="AssetManagementScreen" type="CanvasLayer"]
 layer = 69420
@@ -196,7 +168,7 @@ offset_right = 400.0
 offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0wmek")
+theme_override_styles/panel = ExtResource("3_6eap7")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
@@ -257,24 +229,30 @@ expand_icon = true
 
 [node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(128.03, 40)
+self_modulate = Color(1, 0.73006314, 0.7483791, 1)
+custom_minimum_size = Vector2(60, 40)
 layout_mode = 2
 size_flags_horizontal = 10
 focus_mode = 0
 theme_override_styles/normal = ExtResource("4")
 theme_override_styles/pressed = ExtResource("5")
 theme_override_styles/hover = ExtResource("6")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Icon" type="TextureRect" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/RefreshButton"]
 modulate = Color(1, 1, 1, 0.652)
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 8.0
+offset_left = -12.5
 offset_top = -12.5
-offset_right = 33.0
+offset_right = 12.5
 offset_bottom = 12.5
+grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
@@ -284,6 +262,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/RefreshButton"]
+visible = false
 modulate = Color(1, 1, 1, 0.652)
 layout_mode = 1
 anchors_preset = 15
@@ -297,16 +276,44 @@ theme_override_font_sizes/font_size = 16
 text = "Refresh"
 vertical_alignment = 1
 
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_constants/separation = 30
+
 [node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(50, 50)
+self_modulate = Color(1, 0.47018725, 0.39553043, 1)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
-size_flags_horizontal = 8
-focus_mode = 0
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxEmpty_close")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = ExtResource("4")
+theme_override_styles/pressed = ExtResource("5")
+theme_override_styles/hover = ExtResource("6")
+theme_override_styles/disabled = ExtResource("10_jjfh2")
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer/CloseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
 text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="PanelContainer/VBoxContainer/HeaderPanel/HeaderContents/HeaderContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_constants/separation = 9
 
 [node name="ContentContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
 unique_name_in_owner = true

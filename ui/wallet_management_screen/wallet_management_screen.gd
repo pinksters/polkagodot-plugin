@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var wallet_list_container: VBoxContainer = %WalletListContainer
 @onready var account_list_container: VBoxContainer = %AccountListContainer
 @onready var connect_button: Button = %ConnectButton
+@onready var connect_button_label: Label = %ConnectButton/Label
 @onready var disconnect_button: Button = %DisconnectButton
 @onready var close_button: Button = %CloseButton
 @onready var refresh_button: Button = %RefreshButton
@@ -80,6 +81,7 @@ func _update_ui_state():
 
 	if is_connecting:
 		connect_button.disabled = true
+		connect_button_label.modulate.a = 0.3
 		disconnect_button.visible = false
 		refresh_button.disabled = true
 		_show_extension_selection_screen()
@@ -101,8 +103,8 @@ func _update_ui_state():
 	elif discovered_wallets.size() > 0 or has_provider:
 		connect_button.visible = true
 		connect_button.disabled = selected_wallet_id.is_empty()
-		connect_button.text = "Connect"
-		connect_button.modulate = Color(0.2, 0.4, 1.0)
+		connect_button_label.text = "Connect"
+		connect_button.self_modulate = Color(0.2, 0.4, 1.0)
 		disconnect_button.visible = false
 		refresh_button.disabled = false
 
@@ -111,8 +113,9 @@ func _update_ui_state():
 	else: # No wallets available
 		connect_button.visible = true
 		connect_button.disabled = true
-		connect_button.text = "No Wallets"
-		connect_button.modulate = Color.GRAY
+		connect_button_label.modulate.a = 0.3
+		connect_button_label.text = "No Wallets"
+		connect_button.self_modulate = Color.GRAY
 		disconnect_button.visible = false
 		refresh_button.disabled = false
 
@@ -182,6 +185,7 @@ func _on_wallet_selected(wallet_button: Button):
 	if wallet_button.button_pressed:
 		selected_wallet_id = wallet_button.get_meta("wallet_id")
 		connect_button.disabled = false
+		connect_button_label.modulate.a = 1.0
 
 		if not PolkaGodot.is_wallet_connected():
 			for child in account_list_container.get_children():
@@ -189,6 +193,7 @@ func _on_wallet_selected(wallet_button: Button):
 	else:
 		selected_wallet_id = ""
 		connect_button.disabled = true
+		connect_button_label.modulate.a = 0.3
 
 
 func _on_account_selected(account_button: AccountOptionButton):

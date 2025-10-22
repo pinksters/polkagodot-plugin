@@ -1,48 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bwmmycj1y86fd"]
+[gd_scene load_steps=15 format=3 uid="uid://bwmmycj1y86fd"]
 
 [ext_resource type="Script" uid="uid://dd3je7eflte32" path="res://addons/polkagodot/ui/nft_asset_list_item/nft_asset_list_item.gd" id="1_copbi"]
+[ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="2_6jbvk"]
 [ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3_6jbvk"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vlpjh"]
-bg_color = Color(0.2400937, 0, 0.18631536, 1)
-border_color = Color(1, 0.247059, 0.909804, 1)
-border_blend = true
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0, 0, 0, 1)
-shadow_size = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sjpvn"]
-bg_color = Color(0.7835232, 0.78352356, 0.78352314, 0.9490196)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 0.247059, 0.909804, 1)
-border_blend = true
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(1, 0, 0.764706, 0.4)
-shadow_size = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7inrx"]
-bg_color = Color(0.23392558, 0.2339254, 0.23392543, 0.9490196)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 0.247059, 0.909804, 1)
-border_blend = true
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(1, 0, 1, 0.6)
-shadow_size = 5
+[ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="3_40rhf"]
+[ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="4_4s674"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vlpjh"]
 
@@ -59,6 +21,21 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="Gradient" id="Gradient_6jbvk"]
+colors = PackedColorArray(0.57145464, 0.20979446, 0.5226495, 1, 0, 0.35969293, 0.5420966, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_copbi"]
+gradient = SubResource("Gradient_6jbvk")
+fill_from = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_40rhf"]
+colors = PackedColorArray(0, 0, 0, 0.05, 1, 1, 1, 0.24900001)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6jbvk"]
+gradient = SubResource("Gradient_40rhf")
+fill = 1
+fill_from = Vector2(0.53846157, 0.48290598)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40rhf"]
 content_margin_left = 6.0
@@ -116,6 +93,7 @@ script = ExtResource("1_copbi")
 
 [node name="ClickablePanel" type="Button" parent="."]
 unique_name_in_owner = true
+self_modulate = Color(0.85870415, 0.48796117, 1, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -123,9 +101,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_vlpjh")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_sjpvn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_7inrx")
+theme_override_styles/normal = ExtResource("2_6jbvk")
+theme_override_styles/pressed = ExtResource("3_40rhf")
+theme_override_styles/hover = ExtResource("4_4s674")
 script = ExtResource("1_copbi")
 
 [node name="NameLabel" type="Label" parent="ClickablePanel"]
@@ -169,6 +147,28 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_6jbvk")
+
+[node name="LinearGradient" type="TextureRect" parent="ClickablePanel/Image"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_copbi")
+
+[node name="RadialGradient" type="TextureRect" parent="ClickablePanel/Image"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_6jbvk")
 
 [node name="ImageFrameForeground" type="Panel" parent="ClickablePanel/Image"]
 layout_mode = 1

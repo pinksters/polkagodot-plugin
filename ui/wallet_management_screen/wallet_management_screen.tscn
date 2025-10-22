@@ -7,8 +7,7 @@
 [ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="4_kchph"]
 [ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="5_6t8bt"]
 [ext_resource type="Texture2D" uid="uid://c80g25out4y1r" path="res://addons/polkagodot/assets/icons/refresh.svg" id="7_nbhys"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6t8bt"]
+[ext_resource type="StyleBox" uid="uid://catn70risnbl3" path="res://addons/polkagodot/assets/styles/btn_disabled.tres" id="8_nbhys"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6t8bt"]
 bg_color = Color(0.85646725, 0.5021107, 1, 1)
@@ -57,6 +56,7 @@ theme_override_constants/separation = 15
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
@@ -66,19 +66,83 @@ theme_override_fonts/font = ExtResource("3_nbhys")
 theme_override_font_sizes/font_size = 24
 text = "Connect Wallet"
 
-[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="RefreshButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(60, 60)
+self_modulate = Color(1, 0.73006314, 0.7483791, 1)
+custom_minimum_size = Vector2(62, 40)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 10
 focus_mode = 0
-theme_override_fonts/font = ExtResource("3_nbhys")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxEmpty_6t8bt")
-theme_override_styles/normal_mirrored = ExtResource("3_gv0pf")
+theme_override_styles/normal = ExtResource("3_gv0pf")
 theme_override_styles/pressed = ExtResource("4_kchph")
 theme_override_styles/hover = ExtResource("5_6t8bt")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Icon" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RefreshButton"]
+modulate = Color(1, 1, 1, 0.652)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.5
+offset_top = -12.5
+offset_right = 12.5
+offset_bottom = 12.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("7_nbhys")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RefreshButton"]
+visible = false
+modulate = Color(1, 1, 1, 0.652)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_nbhys")
+theme_override_font_sizes/font_size = 16
+text = "Refresh"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+self_modulate = Color(1, 0.47018725, 0.39553043, 1)
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_nbhys")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = ExtResource("3_gv0pf")
+theme_override_styles/pressed = ExtResource("4_kchph")
+theme_override_styles/hover = ExtResource("5_6t8bt")
+theme_override_styles/disabled = ExtResource("8_nbhys")
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CloseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_nbhys")
+theme_override_font_sizes/font_size = 24
 text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -108,55 +172,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="RefreshButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 45)
-layout_mode = 2
-size_flags_horizontal = 8
-focus_mode = 0
-theme_override_styles/normal = ExtResource("3_gv0pf")
-theme_override_styles/normal_mirrored = ExtResource("3_gv0pf")
-theme_override_styles/pressed = ExtResource("4_kchph")
-theme_override_styles/hover = ExtResource("5_6t8bt")
-
-[node name="Icon" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/RefreshButton"]
-modulate = Color(1, 1, 1, 0.652)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 8.0
-offset_top = -12.5
-offset_right = 33.0
-offset_bottom = 12.5
-grow_vertical = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-mouse_filter = 2
-texture = ExtResource("7_nbhys")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/RefreshButton"]
-modulate = Color(1, 1, 1, 0.652)
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -107.0
-offset_top = -1.0
-offset_right = -2.0
-offset_bottom = -1.0
-grow_horizontal = 0
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme_override_fonts/font = ExtResource("3_nbhys")
-theme_override_font_sizes/font_size = 20
-text = "Refresh"
-vertical_alignment = 1
-
 [node name="AccountScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
@@ -181,13 +196,36 @@ custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3_nbhys")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("3_gv0pf")
 theme_override_styles/normal_mirrored = ExtResource("3_gv0pf")
 theme_override_styles/pressed = ExtResource("4_kchph")
 theme_override_styles/hover = ExtResource("5_6t8bt")
+theme_override_styles/disabled = ExtResource("8_nbhys")
+disabled = true
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer/ConnectButton"]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_nbhys")
+theme_override_font_sizes/font_size = 24
 text = "Connect"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="DisconnectButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer"]
 unique_name_in_owner = true
@@ -197,6 +235,7 @@ custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3_nbhys")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("3_gv0pf")

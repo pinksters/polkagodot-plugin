@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dkv8qiaxm2nry"]
+[gd_scene load_steps=12 format=3 uid="uid://dkv8qiaxm2nry"]
 
 [ext_resource type="Script" uid="uid://bj3nepoxfckma" path="res://addons/polkagodot/ui/asset_action_view/asset_action_view.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://b32sna15g6tqk" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card.tscn" id="2"]
@@ -6,6 +6,9 @@
 [ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
 [ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="4"]
 [ext_resource type="Script" uid="uid://ed2nirihxoo5" path="res://addons/polkagodot/ui/nft_showcase_card/3d_card_view.gd" id="5_c2nca"]
+[ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="7_76o8x"]
+[ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="8_j880j"]
+[ext_resource type="StyleBox" uid="uid://catn70risnbl3" path="res://addons/polkagodot/assets/styles/btn_disabled.tres" id="9_uwilv"]
 
 [sub_resource type="Gradient" id="Gradient_k00sx"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -164,11 +167,32 @@ alignment = 2
 
 [node name="CloseButton" type="Button" parent="CenterContainer/MainPanel/VBoxContainer/TopBar"]
 unique_name_in_owner = true
+self_modulate = Color(1, 0.47018725, 0.39553043, 1)
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = ExtResource("4")
+theme_override_styles/pressed = ExtResource("7_76o8x")
+theme_override_styles/hover = ExtResource("8_j880j")
+theme_override_styles/disabled = ExtResource("9_uwilv")
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/VBoxContainer/TopBar/CloseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3")
 theme_override_font_sizes/font_size = 24
 text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ContentContainer" type="VBoxContainer" parent="CenterContainer/MainPanel/VBoxContainer"]
 layout_mode = 2
@@ -192,9 +216,25 @@ horizontal_alignment = 1
 
 [node name="ActionButton" type="Button" parent="CenterContainer/MainPanel/VBoxContainer/ContentContainer"]
 unique_name_in_owner = true
+self_modulate = Color(1, 0.48307073, 0.36254904, 1)
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("4")
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/VBoxContainer/ContentContainer/ActionButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
 text = "Equip"
+horizontal_alignment = 1
+vertical_alignment = 1

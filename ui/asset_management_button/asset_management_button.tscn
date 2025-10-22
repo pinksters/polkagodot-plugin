@@ -2,42 +2,10 @@
 
 [ext_resource type="Script" uid="uid://brhjmmp86fpj8" path="res://addons/polkagodot/ui/asset_management_button/asset_management_button.gd" id="1"]
 [ext_resource type="FontVariation" uid="uid://hvjn3dv84xvx" path="res://addons/polkagodot/assets/fonts/unbounded_light.tres" id="2"]
+[ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="2_kb15s"]
 [ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11ua7"]
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e512w"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccdkg"]
-bg_color = Color(0.856, 0.856, 0.856, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="3_oyl1o"]
+[ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="4_hepfk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68qd8"]
 bg_color = Color(0.404, 0.404, 0.404, 0.608)
@@ -66,21 +34,27 @@ corner_radius_bottom_left = 10
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
-bg_color = Color(0, 0, 0, 0.8)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kb15s"]
+bg_color = Color(0.0056611444, 0.0056611537, 0.00566115, 1)
+border_width_top = 2
+border_width_right = 2
+border_color = Color(0.7419553, 0.5830128, 1, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+shadow_color = Color(0.4554791, 0.0008738619, 0.59385574, 1)
+shadow_size = 1
+shadow_offset = Vector2(-1, 1)
 
 [node name="AssetManagementButton" type="Button"]
 self_modulate = Color(0.576, 0.737, 1, 1)
 custom_minimum_size = Vector2(200, 40)
 focus_mode = 0
 theme_override_fonts/font = ExtResource("2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_11ua7")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_e512w")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ccdkg")
+theme_override_styles/normal = ExtResource("2_kb15s")
+theme_override_styles/pressed = ExtResource("3_oyl1o")
+theme_override_styles/hover = ExtResource("4_hepfk")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_68qd8")
 theme_override_styles/focus = SubResource("StyleBoxFlat_nvc3b")
 script = ExtResource("1")
@@ -117,7 +91,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kb15s")
 
 [node name="BadgeLabel" type="Label" parent="BadgeContainer"]
 layout_mode = 1
