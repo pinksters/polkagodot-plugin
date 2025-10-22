@@ -44,6 +44,7 @@ var asset_management_screen: CanvasLayer = null
 var user_nfts: Array[NFT] = []
 var is_fetching_nfts: bool = false
 var equipped_nft_id: int = 0
+var equipped_nft: NFT = null
 
 func _init() -> void:
 	_load_config()
@@ -221,6 +222,7 @@ func _on_wallet_connected(args: Array):
 
 		# Automatically fetch local user's NFTs as soon as wallet connects
 		fetch_user_nfts()
+		await user_nfts_fetched
 		query_equipped_nft()
 	else:
 		is_connected = false
@@ -642,6 +644,7 @@ func _on_nft_equipped(args: Array):
 
 		for nft in user_nfts:
 			if nft.token_id == equipped_nft_id:
+				equipped_nft = nft
 				nft_equipped.emit(nft)
 				return
 
@@ -674,6 +677,7 @@ func _on_nft_unequipped(args: Array):
 
 	_log("NFT unequip transaction completed successfully")
 	equipped_nft_id = 0
+	equipped_nft = null
 	nft_unequipped.emit()
 
 
@@ -693,3 +697,9 @@ func _on_equipped_nft_queried(args: Array):
 	equipped_nft_id = token_id
 	_log("Player has equipped NFT #" + str(equipped_nft_id))
 	equipped_nft_loaded.emit(equipped_nft_id)
+	
+	for nft in user_nfts:
+		if nft.token_id == equipped_nft_id:
+			equipped_nft = nft
+			nft_equipped.emit(nft)
+			return
