@@ -9,7 +9,12 @@ It is designed to work with [Pinkhat](https://github.com/mar1/pinkhat) smart con
 This is made with browser wallet extensions in mind, and therefore will only work with web exports.
 
 
-## Installation
+## Quick Start
+
+If you are starting a new project with PolkaGodot, the quickest way to get started is via the [PolkaGodot minimal template](https://github.com/pinksters/polkagodot-minimal-template)
+
+
+## Manual Installation
 
 1. Clone the extension into `res://addons/polkagodot` in your Godot project:
 
