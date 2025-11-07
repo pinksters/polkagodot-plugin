@@ -19,9 +19,6 @@ extends CanvasLayer
 @onready var list_view: AssetListDisplay = %ListViewContent/UserAssetsListView
 @onready var grid_view: AssetListDisplay = %GridViewContent/UserAssetsGridView
 
-# Asset action view
-@onready var asset_action_view: CanvasLayer = %AssetActionView
-
 var current_view_mode: String = "list"
 var is_refreshing: bool = false
 
@@ -42,7 +39,6 @@ func _ready():
 	# Connect UI signals
 	if list_view: list_view.asset_clicked.connect(_on_asset_clicked)
 	grid_view.asset_clicked.connect(_on_asset_clicked)
-	asset_action_view.closed.connect(_on_asset_action_view_closed)
 
 	# Initial setup
 	_update_ui_state()
@@ -142,6 +138,9 @@ func close():
 
 
 func _on_asset_clicked(nft: NFT):
+	var asset_action_view = preload("res://addons/polkagodot/ui/asset_action_view/asset_action_view.tscn").instantiate()
+	add_child(asset_action_view)
+	asset_action_view.closed.connect(_on_asset_action_view_closed)
 	if asset_action_view and asset_action_view.has_method("show_nft"):
 		asset_action_view.show_nft(nft)
 

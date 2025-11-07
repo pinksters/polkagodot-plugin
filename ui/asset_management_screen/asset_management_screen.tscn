@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://b7xq8nmkfqwxe"]
+[gd_scene load_steps=22 format=3 uid="uid://b7xq8nmkfqwxe"]
 
 [ext_resource type="Script" uid="uid://chivtew3s23rm" path="res://addons/polkagodot/ui/asset_management_screen/asset_management_screen.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://dwvrt0fapc12f" path="res://addons/polkagodot/assets/icons/bars-3.svg" id="8_4tdpf"]
 [ext_resource type="Texture2D" uid="uid://drskufhqo5mcm" path="res://addons/polkagodot/assets/icons/table-cells.svg" id="8_6eap7"]
 [ext_resource type="PackedScene" uid="uid://c8qv3f7h2knxm" path="res://addons/polkagodot/ui/user_assets_grid_view/user_assets_grid_view.tscn" id="9"]
-[ext_resource type="PackedScene" uid="uid://dkv8qiaxm2nry" path="res://addons/polkagodot/ui/asset_action_view/asset_action_view.tscn" id="10"]
 [ext_resource type="StyleBox" uid="uid://catn70risnbl3" path="res://addons/polkagodot/assets/styles/btn_disabled.tres" id="10_jjfh2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eap7"]
@@ -336,7 +335,3 @@ layout_mode = 2
 
 [node name="UserAssetsGridView" parent="PanelContainer/VBoxContainer/ContentContainer/GridViewContent" instance=ExtResource("9")]
 layout_mode = 1
-
-[node name="AssetActionView" parent="." instance=ExtResource("10")]
-unique_name_in_owner = true
-visible = false

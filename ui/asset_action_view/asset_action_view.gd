@@ -32,9 +32,6 @@ func _ready():
 	PolkaGodot.nft_unequip_failed.connect(_on_nft_unequip_failed)
 	PolkaGodot.equipped_nft_loaded.connect(_on_equipped_nft_loaded)
 
-	# Initially hide
-	hide()
-
 
 func show_nft(nft: NFT):
 	if not nft:
@@ -119,8 +116,8 @@ func _on_nft_unequip_failed(error: String):
 
 
 func _on_close_button_pressed():
-	hide()
 	closed.emit()
+	queue_free()
 
 
 func _input(event: InputEvent):
