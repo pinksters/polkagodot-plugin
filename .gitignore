@@ -1,5 +1,4 @@
 # Godot 4+ specific ignores
-*.uid
 *.import
 
 # Godot-specific ignores
