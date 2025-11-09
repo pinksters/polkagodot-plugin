@@ -455,9 +455,11 @@ func fetch_user_nfts():
 
 	is_fetching_nfts = true
 	user_nfts.clear()
-
-	nfts_queried.connect(_on_user_nfts_fetched, CONNECT_ONE_SHOT)
-	nft_query_failed.connect(_on_user_nft_fetch_failed, CONNECT_ONE_SHOT)
+	
+	if not nfts_queried.is_connected(_on_user_nfts_fetched):
+		nfts_queried.connect(_on_user_nfts_fetched, CONNECT_ONE_SHOT)
+	if not nft_query_failed.is_connected(_on_user_nft_fetch_failed):
+		nft_query_failed.connect(_on_user_nft_fetch_failed, CONNECT_ONE_SHOT)
 
 	var query_options = {
 		"user_address": current_address,
