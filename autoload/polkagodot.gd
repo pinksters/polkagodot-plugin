@@ -238,6 +238,8 @@ func _on_wallet_disconnected(args: Array):
 	current_address = ""
 	current_wallet_id = ""
 	available_accounts = []
+	equipped_nft = null
+	equipped_nft_id = 0
 	user_nfts.clear()
 	_log("Wallet disconnected")
 	wallet_disconnected.emit()
