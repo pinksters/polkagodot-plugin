@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c8qv3f7h2knxm"]
 
 [ext_resource type="Script" uid="uid://b4kn4ctk48ub3" path="res://addons/polkagodot/ui/user_assets_grid_view/user_assets_grid_view.gd" id="1"]
-[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="2"]
+[ext_resource type="FontFile" uid="uid://d28fopo11k0kg" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrllj"]
 

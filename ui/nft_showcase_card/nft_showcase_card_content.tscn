@@ -1,13 +1,13 @@
 [gd_scene load_steps=14 format=3 uid="uid://dgdd6cimr50do"]
 
 [ext_resource type="Script" uid="uid://dl14bm5jxo0oj" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card_content.gd" id="1_1au61"]
-[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="2_1au61"]
-[ext_resource type="Texture2D" uid="uid://cms1wpf0cvh4q" path="res://addons/polkagodot/assets/logos/polkadot-logo.png" id="2_6u8vb"]
-[ext_resource type="Texture2D" uid="uid://dcrpn4uchtpbk" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-base.png" id="3_i21ld"]
-[ext_resource type="Texture2D" uid="uid://bh4cn6mqcewxv" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-borders.png" id="4_6u8vb"]
-[ext_resource type="Texture2D" uid="uid://crte56gyp04a6" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-logo-bg.png" id="5_x1vse"]
-[ext_resource type="Texture2D" uid="uid://ow7e2dho2g5i" path="res://addons/polkagodot/ui/nft_showcase_card/card-logo-gem.png" id="6_i21ld"]
-[ext_resource type="Texture2D" uid="uid://bax451ira6e8f" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-textarea.png" id="7_7gpby"]
+[ext_resource type="FontFile" uid="uid://d28fopo11k0kg" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="2_1au61"]
+[ext_resource type="Texture2D" uid="uid://ca8l3cuxmlhnf" path="res://addons/polkagodot/assets/logos/polkadot-logo.png" id="2_6u8vb"]
+[ext_resource type="Texture2D" uid="uid://dbn8k3jt61rva" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-base.png" id="3_i21ld"]
+[ext_resource type="Texture2D" uid="uid://btulq1kcd4eac" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-borders.png" id="4_6u8vb"]
+[ext_resource type="Texture2D" uid="uid://5bl4q1rkusnp" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-logo-bg.png" id="5_x1vse"]
+[ext_resource type="Texture2D" uid="uid://b7inxn10jadye" path="res://addons/polkagodot/ui/nft_showcase_card/card-logo-gem.png" id="6_i21ld"]
+[ext_resource type="Texture2D" uid="uid://c345v82juhob6" path="res://addons/polkagodot/ui/nft_showcase_card/card-body-textarea.png" id="7_7gpby"]
 
 [sub_resource type="Gradient" id="Gradient_owvo3"]
 colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)

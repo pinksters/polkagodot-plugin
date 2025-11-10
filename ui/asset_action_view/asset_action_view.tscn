@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bj3nepoxfckma" path="res://addons/polkagodot/ui/asset_action_view/asset_action_view.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://b32sna15g6tqk" path="res://addons/polkagodot/ui/nft_showcase_card/nft_showcase_card.tscn" id="2"]
-[ext_resource type="Texture2D" uid="uid://cpfq6xha1u4kb" path="res://addons/polkagodot/assets/logos/polkadot-particle.png" id="2_dooxm"]
-[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
+[ext_resource type="Texture2D" uid="uid://c2al2inyhmpxi" path="res://addons/polkagodot/assets/logos/polkadot-particle.png" id="2_dooxm"]
+[ext_resource type="FontFile" uid="uid://d28fopo11k0kg" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
 [ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="4"]
 [ext_resource type="Script" uid="uid://ed2nirihxoo5" path="res://addons/polkagodot/ui/nft_showcase_card/3d_card_view.gd" id="5_c2nca"]
 [ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="7_76o8x"]
@@ -71,7 +71,7 @@ transparent_bg = true
 handle_input_locally = false
 msaa_3d = 1
 use_hdr_2d = true
-size = Vector2i(1152, 648)
+size = Vector2i(1280, 720)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 

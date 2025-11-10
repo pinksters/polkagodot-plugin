@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://brhjmmp86fpj8" path="res://addons/polkagodot/ui/asset_management_button/asset_management_button.gd" id="1"]
 [ext_resource type="FontVariation" uid="uid://hvjn3dv84xvx" path="res://addons/polkagodot/assets/fonts/unbounded_light.tres" id="2"]
 [ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="2_kb15s"]
-[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
+[ext_resource type="FontFile" uid="uid://d28fopo11k0kg" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3"]
 [ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="3_oyl1o"]
 [ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="4_hepfk"]
 

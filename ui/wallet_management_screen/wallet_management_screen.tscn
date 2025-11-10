@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://1fqbtx1qrplk" path="res://addons/polkagodot/ui/wallet_management_screen/wallet_management_screen.gd" id="1"]
 [ext_resource type="StyleBox" uid="uid://cwebuwbxahvvi" path="res://addons/polkagodot/assets/styles/content_panel.tres" id="2_ej0ct"]
 [ext_resource type="StyleBox" uid="uid://bd0attnepmxwr" path="res://addons/polkagodot/assets/styles/btn_normal.tres" id="3_gv0pf"]
-[ext_resource type="FontFile" uid="uid://dei82j8fhofi0" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3_nbhys"]
+[ext_resource type="FontFile" uid="uid://d28fopo11k0kg" path="res://addons/polkagodot/assets/fonts/unbounded.ttf" id="3_nbhys"]
 [ext_resource type="StyleBox" uid="uid://dt0jkrx1d787d" path="res://addons/polkagodot/assets/styles/btn_pressed.tres" id="4_kchph"]
 [ext_resource type="StyleBox" uid="uid://2y6gnw44yx4a" path="res://addons/polkagodot/assets/styles/btn_hover.tres" id="5_6t8bt"]
-[ext_resource type="Texture2D" uid="uid://c80g25out4y1r" path="res://addons/polkagodot/assets/icons/refresh.svg" id="7_nbhys"]
+[ext_resource type="Texture2D" uid="uid://daqh4xchupm8e" path="res://addons/polkagodot/assets/icons/refresh.svg" id="7_nbhys"]
 [ext_resource type="StyleBox" uid="uid://catn70risnbl3" path="res://addons/polkagodot/assets/styles/btn_disabled.tres" id="8_nbhys"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6t8bt"]
