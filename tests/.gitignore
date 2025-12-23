@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Coverage reports
+coverage/
+
+# Vitest cache
+.vitest/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Lock files
+package-lock.json
