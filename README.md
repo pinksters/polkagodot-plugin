@@ -1,5 +1,3 @@
-## $$\color{pink}WORK \space IN \space PROGRESS! $$
-
 # Overview
 
 PolkaGodot is an extension for Godot Engine 4.5+ that enables plug-and-play EVM wallet connectivity and a complete UX for on-chain equippable cosmetics.
@@ -65,4 +63,17 @@ If the user has a NFT equipped, it will be accessible globally via `PolkaGodot.e
 The NFT class has a very straightforward structure and mirrors all properties of the on-chain token, including custom metadata fields and automatically-loaded texture.
 
 
+## Tests
+
+Wallet detection and chain interaction are covered by Vitest unit tests.
+
+Testable code is extracted from Polkagodot's html export shell at test runtime.
+
+To run tests:
+
+```
+cd tests
+npm install
+npm run test:run
+```
 
